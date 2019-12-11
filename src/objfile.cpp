@@ -25,6 +25,11 @@ ObjFile::ObjFile(string filename)
             Faces temp(line);
             facesVector.push_back(temp);
         }
+        else if (line.find("o ") != std::string::npos) {
+            char tmpStr[128];
+            sscanf(line.c_str(), "o %s", tmpStr);
+            name = tmpStr;
+        }
     }
 
     for (int i = 0; i<facesVector.size(); i++) {

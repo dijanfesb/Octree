@@ -14,6 +14,7 @@ class Faces
     public:
         Faces(string fLine);         // Konstruktor koji čita red iz datoteke FORMAT: "f v1/x/x v2/x/x v3/x/x"
         array <int, 3> get_faceIndices();
+        int operator[] (int index);
 };
 
 #endif

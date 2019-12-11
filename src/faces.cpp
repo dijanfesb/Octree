@@ -16,13 +16,7 @@ Faces::Faces(string fLine)
 
     int tempArr[3] = {0};
 
-    int dumint = 0;
-    char dumchar = 0;
-
-    sscanf(cString, "%c %d/%d/%d %d/%d/%d %d/%d/%d", &dumchar,\
-                &tempArr[0], &dumint, &dumint,\
-                &tempArr[1], &dumint, &dumint,\
-                &tempArr[2], &dumint, &dumint);
+    sscanf(cString, "f %d/%*d/%*d %d/%*d/%*d %d/%*d/%*d", &tempArr[0], &tempArr[1], &tempArr[2]);
 
     for (int i=0; i<3; i++)
         faceIndices[i] = tempArr[i];
@@ -31,4 +25,9 @@ Faces::Faces(string fLine)
 array <int, 3> Faces::get_faceIndices()
 {
     return faceIndices;
+}
+
+int Faces::operator[] (int index)
+{
+    return faceIndices[index];
 }
