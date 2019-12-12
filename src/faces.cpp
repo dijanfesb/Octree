@@ -22,9 +22,21 @@ Faces::Faces(string fLine)
         faceIndices[i] = tempArr[i];
 }
 
+Faces::Faces()
+{
+    for (int i=0; i<3; i++)
+        faceIndices[i] = 0;
+}
+
 array <int, 3> Faces::get_faceIndices()
 {
     return faceIndices;
+}
+
+void Faces::set_faceIndices_zero()
+{
+    for (int i=0; i<3; i++)
+        faceIndices[i] = 0;
 }
 
 int Faces::operator[] (int index)

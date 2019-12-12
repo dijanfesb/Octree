@@ -12,8 +12,10 @@ class Faces
     private:
         array <int, 3> faceIndices;  // Niz sa 3 indexa vertexa;
     public:
+        Faces();
         Faces(string fLine);         // Konstruktor koji čita red iz datoteke FORMAT: "f v1/x/x v2/x/x v3/x/x"
         array <int, 3> get_faceIndices();
+        void set_faceIndices_zero();
         int operator[] (int index);
 };
 

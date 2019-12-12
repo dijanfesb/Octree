@@ -12,6 +12,10 @@ ObjFile::ObjFile(string filename)
 {
     ifstream obj(filename, ios::in);
 
+    Vertex emptyVertex(0, 0, 0);
+
+    vertexVector.push_back(emptyVertex);
+
     while (!obj.eof()) {
         string line;
         
