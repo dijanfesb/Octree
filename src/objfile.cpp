@@ -36,7 +36,7 @@ ObjFile::ObjFile(string filename)
         }
     }
 
-    for (int i = 0; i<facesVector.size(); i++) {
+    for (unsigned long i = 0; i<facesVector.size(); i++) {
         array <Vertex *, 3> tempArray;
         array <int, 3> vertexIndex = facesVector[i].get_faceIndices();
 

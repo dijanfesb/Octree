@@ -11,8 +11,8 @@ class ObjFile
         string name;
         vector <Vertex> vertexVector;                    // Vector svih vertexa
         vector <Faces> facesVector;                      // Vector svih faceova
+    public:       
         vector <array <Vertex *, 3>> triangleVector;     // Vektor trokuta
-    public:
         ObjFile(string filename);
 };
 

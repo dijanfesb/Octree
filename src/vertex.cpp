@@ -34,3 +34,9 @@ Vertex::Vertex(string vLine)
 
     line >> x >> y >> z;
 }
+
+array <double, 3> Vertex::get_coordinates()
+{
+    array <double, 3> temp = {x, y, z};
+    return temp;
+}

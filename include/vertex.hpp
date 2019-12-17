@@ -2,6 +2,7 @@
 #define VERTEX_HPP
 
 #include <string>
+#include <array>
 
 using namespace std;
 
@@ -13,6 +14,7 @@ class Vertex
         double z;
     public:
         Vertex(string vLine);
+        array <double, 3> get_coordinates();
         Vertex(double _x = 0, double  _y = 0, double _z = 0);
         int set_coordinates(double _x, double _y, double _z);
 };
