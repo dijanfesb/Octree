@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "../include/faces.hpp"
 #include <string>
 #include <string.h>

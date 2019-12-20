@@ -33,3 +33,7 @@
 *.exe
 *.out
 *.app
+/x64
+/release
+/debug
+/.vs

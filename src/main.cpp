@@ -2,6 +2,7 @@
 #include "../include/objfile.hpp"
 #include "../include/vertex.hpp"
 #include "../include/guiQt3D.hpp"
+#include "../include/octree.hpp"
 
 #include <iostream>
 #include <QApplication>
@@ -26,9 +27,14 @@ class MyMainWindow : public QMainWindow {
 
 int main(int argc, char *argv[])
 {
+    if (argc < 2)
+        return -2;
+
     string filename = argv[1];
 
     ObjFile file (filename);
+
+    Octree tree(file.get_vertexVector());
 
     QApplication app (argc, argv);
     MyMainWindow mainWindow;

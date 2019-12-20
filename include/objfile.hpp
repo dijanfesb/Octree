@@ -14,6 +14,7 @@ class ObjFile
     public:       
         vector <array <Vertex *, 3>> triangleVector;     // Vektor trokuta
         ObjFile(string filename);
+        vector <Vertex> get_vertexVector();
 };
 
 #endif

@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "../include/objfile.hpp"
 #include "../include/vertex.hpp"
 #include "../include/faces.hpp"
@@ -11,6 +13,9 @@ using namespace std;
 ObjFile::ObjFile(string filename)
 {
     ifstream obj(filename, ios::in);
+
+    if (!obj)
+        return;
 
     Vertex emptyVertex(0, 0, 0);
 
@@ -50,3 +55,8 @@ ObjFile::ObjFile(string filename)
     obj.close();
 }
 
+
+vector <Vertex> ObjFile::get_vertexVector()
+{
+    return this->vertexVector;
+}

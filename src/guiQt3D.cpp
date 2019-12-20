@@ -72,6 +72,7 @@ void Qt3DWindow::CreateRootEntity(){
 // postavi geometriju
     this->setRootEntity(pRootEntity);
 }
+
 void Qt3DWindow::AddTris(vector <array <Vertex *, 3>> triangleVector_Ext) {
     vector <array <QVector3D, 3>> triangleVector;
 
@@ -118,7 +119,7 @@ void Qt3DWindow::AddTris(vector <array <Vertex *, 3>> triangleVector_Ext) {
 // broj trokuta * 3 vrha
 	trisIndexBufferData.resize(int(triangleVector.size()) * 3 * sizeof(ushort));
 	ushort *trisRawIndexArray = reinterpret_cast<ushort *>(trisIndexBufferData.data());
-	for (int i = 0; i < triangleVector.size(); ++i) {
+	for (ulong i = 0; i < triangleVector.size(); ++i) {
 		trisRawIndexArray[i * 3 + 0] = i * 3 + 0;
 		trisRawIndexArray[i * 3 + 1] = i * 3 + 1;
 		trisRawIndexArray[i * 3 + 2] = i * 3 + 2;
@@ -174,6 +175,7 @@ void Qt3DWindow::AddTris(vector <array <Vertex *, 3>> triangleVector_Ext) {
 // dodaj materijal u entitet
     pTrisEntity->addComponent(pPhongBlue);
 }
+
 void Qt3DWindow::AddLines() {
 // stvaram entitet, renderer i geometriju
     Qt3DCore::QEntity *linesEntity = new Qt3DCore::QEntity(pRootEntity);
