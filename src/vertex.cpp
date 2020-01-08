@@ -44,9 +44,9 @@ array <double, 3> Vertex::get_coordinates()
 
 bool Vertex::vertexInsideBounds(Bounds bounds)
 {
-    bool xIn = this->x >= bounds.leftX && this->x <= bounds.rightX;
-    bool yIn = this->y >= bounds.bottomY && this->y <= bounds.topY;
-    bool zIn = this->z >= bounds.backZ && this->z <= bounds.frontZ;
+    bool xIn = (this->x > bounds.leftX) && (this->x < bounds.rightX);
+    bool yIn = (this->y > bounds.bottomY) && (this->y < bounds.topY);
+    bool zIn = (this->z > bounds.backZ) && (this->z < bounds.frontZ);
 
     return (xIn && yIn && zIn);
 }

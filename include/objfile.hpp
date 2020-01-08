@@ -12,9 +12,9 @@ class ObjFile
         vector <Vertex> vertexVector;                    // Vector svih vertexa
         vector <Faces> facesVector;                      // Vector svih faceova
     public:       
-        vector <array <Vertex *, 3>> triangleVector;     // Vektor trokuta
         ObjFile(string filename);
         vector <Vertex> get_vertexVector();
+        vector <array <Vertex *, 3>> triangleVector;     // Vektor trokuta
 };
 
 #endif

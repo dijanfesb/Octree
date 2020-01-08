@@ -1,10 +1,9 @@
-#define _CRT_SECURE_NO_WARNINGS
-
 #include "../include/faces.hpp"
 #include <string>
 #include <string.h>
 #include <sstream>
 #include <array>
+#include <iostream>
 
 using namespace std;
 
@@ -44,4 +43,23 @@ void Faces::set_faceIndices_zero()
 int Faces::operator[] (int index)
 {
     return faceIndices[index];
+}
+
+array <Vertex, 3> Faces::get_vertices(vector <Vertex> vertexVec)
+{
+    array <Vertex, 3> ret;
+
+    for (int i = 0; i<3; i++)
+        ret[i] = vertexVec[this->faceIndices[i]];
+
+    return ret;
+}
+
+bool triangleInsideBounds(array <Vertex *, 3> triangle, Bounds bounds)
+{
+    for (auto vertex : triangle)
+        if (vertex->vertexInsideBounds(bounds))
+            return true;
+
+    return false;
 }

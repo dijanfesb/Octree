@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "array": "cpp",
+        "*.tcc": "cpp",
+        "qdiffusespecularmaterial": "cpp",
+        "qcamera": "cpp",
+        "qt3dextras": "cpp",
+        "qapplication": "cpp",
+        "qhboxlayout": "cpp",
+        "variant": "cpp",
+        "qt3dwindow": "cpp",
+        "chrono": "cpp"
+    }
+}

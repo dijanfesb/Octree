@@ -5,20 +5,22 @@
 #include <array>
 #include "vertex.hpp"
 #include "bounds.hpp"
+#include "faces.hpp"
+#include "guiQt3D.hpp"
 
 class Octree {
 private:
-    vector <Vertex> Vertices;
+    vector <array <Vertex *, 3>> triangles;
     int level;
     Vertex center;
     Bounds bounds;
+    static string octants[8];
     array <Octree *, 8> Children;
 public:
-    Octree(vector <Vertex> Vertices);
-    Octree(vector <Vertex> parentVertices, Bounds bounds, int level);
+    Octree(vector <array <Vertex *, 3>> &triangles_parent, Bounds bounds, int level, Qt3DWindow * win, size_t totalTris);
 };
 
-vector <Vertex> findVerticesInsideBounds(vector <Vertex> vertices, Bounds bounds);
+vector <array <Vertex *, 3>> findTrisInsideBounds(vector <array <Vertex *, 3>> triangles, Bounds bounds);
 Vertex findCenter(Bounds bounds);
 Bounds findBounds(vector <Vertex> Vertices);
 Bounds calculateBounds(string octant, Bounds parentBounds, Vertex parentsCenter);

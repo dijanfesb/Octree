@@ -23,9 +23,10 @@ class Qt3DWindow : public Qt3DExtras::Qt3DWindow {
 public:
     Qt3DWindow();
 
-    void AddTris(vector <array <Vertex *, 3>> triangleVector_Ext);
-    void AddLines();
-    void AddText(const QString& str, const QVector3D& pos, Qt3DExtras::QPhongMaterial* pMat);
+    void AddTris(vector <array <Vertex *, 3>> &triangleVector_Ext);
+    void AddLines(vector <QVector3D> lines);
+    void DrawLines(Bounds bounds);
+    void AddText(const QString& str, const QVector3D& pos, Qt3DExtras::QPhongMaterial* pMat, float scale);
     void CreateRootEntity();
 
     QWidget* pMyWidget;

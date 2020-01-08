@@ -17,6 +17,7 @@ Qt3DWindow::Qt3DWindow(){
     this->show();
 // napravi widget od ovog prozora
     this->pMyWidget = QWidget::createWindowContainer(this);
+    this->setFlags(Qt::FramelessWindowHint);
 }
 void Qt3DWindow::CreateRootEntity(){
 // Root entity
@@ -65,24 +66,23 @@ void Qt3DWindow::CreateRootEntity(){
         // triangleVector.push_back(face);
         // this->AddTris(triangleVector);
     }
-    this->AddLines();
-    this->AddText("x", QVector3D(2, 0, 0), pPhongRed);
-    this->AddText("y", QVector3D(0, 2, 0), pPhongGreen);
-    this->AddText("z", QVector3D(0, 0, 2), pPhongBlue);
+    // this->AddLines();
+    // this->AddText("x", QVector3D(2, 0, 0), pPhongRed);
+    // this->AddText("y", QVector3D(0, 2, 0), pPhongGreen);
+    // this->AddText("z", QVector3D(0, 0, 2), pPhongBlue);
 // postavi geometriju
     this->setRootEntity(pRootEntity);
 }
 
-void Qt3DWindow::AddTris(vector <array <Vertex *, 3>> triangleVector_Ext) {
+void Qt3DWindow::AddTris(vector <array <Vertex *, 3>> &triangleVector_Ext) {
     vector <array <QVector3D, 3>> triangleVector;
 
     for(auto triangle : triangleVector_Ext) {
         array <QVector3D, 3> tempQVector;
         for (int j=0; j<3; j++) {
-            array <double, 3> vertex = triangle[j]->get_coordinates();
-            tempQVector[j].setX(vertex[0]);
-            tempQVector[j].setY(vertex[1]);
-            tempQVector[j].setZ(vertex[2]);
+            tempQVector[j] = QVector3D(triangle[j]->get_coordinates()[0],
+                                       triangle[j]->get_coordinates()[1],
+                                       triangle[j]->get_coordinates()[2]);
         }
         triangleVector.push_back(tempQVector);
     }
@@ -101,7 +101,8 @@ void Qt3DWindow::AddTris(vector <array <Vertex *, 3>> triangleVector_Ext) {
 	    tn = QVector3D::normal(it[0], it[1], it[2]);
 	    trisVertices << it[0] << tn;
 	    trisVertices << it[1] << tn;
-	    trisVertices << it[2] << tn;
+	    trisVertices << it[2] << tn;    void AddLines();
+
 	}
 // punim vertex buffer
 	QByteArray trisVertexBufferData;
@@ -176,7 +177,7 @@ void Qt3DWindow::AddTris(vector <array <Vertex *, 3>> triangleVector_Ext) {
     pTrisEntity->addComponent(pPhongBlue);
 }
 
-void Qt3DWindow::AddLines() {
+void Qt3DWindow::AddLines(vector <QVector3D> lines) {
 // stvaram entitet, renderer i geometriju
     Qt3DCore::QEntity *linesEntity = new Qt3DCore::QEntity(pRootEntity);
     Qt3DRender::QGeometryRenderer *linesRenderer = new Qt3DRender::QGeometryRenderer(pRootEntity);
@@ -185,23 +186,21 @@ void Qt3DWindow::AddLines() {
     Qt3DRender::QBuffer *linesVertexDataBuffer = new Qt3DRender::QBuffer(linesGeometry);
     Qt3DRender::QBuffer *linesIndexDataBuffer = new Qt3DRender::QBuffer(linesGeometry);
 // vrhovi
-    QVector3D lv0(-200.0f, 0.0f, 0.0f);
-    QVector3D lv1(200.0f, 0.0f, 0.0f);
-    QVector3D lv2(0.0f, -200.0f, 0.0f);
-    QVector3D lv3(0.0f, 200.0f, 0.0f);
-    QVector3D lv4(0.0f, 0.0f, -200.0f);
-    QVector3D lv5(0.0f, 0.0f, 200.0f);
+    // QVector3D lv0(-200.0f, 0.0f, 0.0f);
+    // QVector3D lv1(200.0f, 0.0f, 0.0f);
+    // QVector3D lv2(0.0f, -200.0f, 0.0f);
+    // QVector3D lv3(0.0f, 200.0f, 0.0f);
+    // QVector3D lv4(0.0f, 0.0f, -200.0f);
+    // QVector3D lv5(0.0f, 0.0f, 200.0f);
 // vektor sa koordinatama
-    QVector<QVector3D> linesVertices = QVector<QVector3D>()
-        << lv0
-        << lv1
-        << lv2
-        << lv3
-        << lv4
-        << lv5;
+    QVector<QVector3D> linesVertices;
+
+    for (auto vertex : lines)
+        linesVertices << vertex;
+
 // indeksi vrhova - šest vrhova po tri koordinate
     QByteArray linesVertexBufferData;
-    linesVertexBufferData.resize(6 * 3 * sizeof(float));
+    linesVertexBufferData.resize(lines.size() * 3 * sizeof(float));
     float *linesRawVertexArray = reinterpret_cast<float*>(linesVertexBufferData.data());
     int idx = 0;
     for (const QVector3D &v : linesVertices) {
@@ -211,14 +210,11 @@ void Qt3DWindow::AddLines() {
     }
  // connectivity between vertices
     QByteArray linesIndexBufferData;
-    linesIndexBufferData.resize(6 * sizeof(unsigned int)); // start to end
+    linesIndexBufferData.resize(lines.size() * sizeof(unsigned int)); // start to end
     unsigned int *linesRawIndexArray = reinterpret_cast<unsigned int*>(linesIndexBufferData.data());
-    *linesRawIndexArray++ = 0;
-    *linesRawIndexArray++ = 1;
-    *linesRawIndexArray++ = 2;
-    *linesRawIndexArray++ = 3;
-    *linesRawIndexArray++ = 4;
-    *linesRawIndexArray++ = 5;
+    for (ulong i = 0; i < lines.size(); i++) {
+        *linesRawIndexArray++ = i;
+    }
 // postavljam buffere
     linesVertexDataBuffer->setData(linesVertexBufferData);
     linesIndexDataBuffer->setData(linesIndexBufferData);
@@ -230,13 +226,13 @@ void Qt3DWindow::AddLines() {
     linePositionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
     linePositionAttribute->setBuffer(linesVertexDataBuffer);
     linePositionAttribute->setByteStride(3 * sizeof(float));
-    linePositionAttribute->setCount(6);
+    linePositionAttribute->setCount(lines.size());
 // stvaram atribute indeksa linija
     Qt3DRender::QAttribute *linesIndexAttribute = new Qt3DRender::QAttribute(linesGeometry);
     linesIndexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
     linesIndexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
     linesIndexAttribute->setBuffer(linesIndexDataBuffer);
-    linesIndexAttribute->setCount(6);
+    linesIndexAttribute->setCount(lines.size());
 // dodajem atribute u geometriju
     linesGeometry->addAttribute(linePositionAttribute); // We add the vertices in the linesGeometry
     linesGeometry->addAttribute(linesIndexAttribute); // We add the indices linking the points in the linesGeometry
@@ -245,9 +241,10 @@ void Qt3DWindow::AddLines() {
     linesRenderer->setGeometry(linesGeometry);
 // dodajem objekt
     linesEntity->addComponent(linesRenderer);
-    linesEntity->addComponent(pPhongGreen);
+    linesEntity->addComponent(pPhongRed);
 }
-void Qt3DWindow::AddText(const QString& str, const QVector3D& pos, Qt3DExtras::QPhongMaterial* pMat) {
+
+void Qt3DWindow::AddText(const QString& str, const QVector3D& pos, Qt3DExtras::QPhongMaterial* pMat, float scale) {
 // stvaram entitet
     Qt3DCore::QEntity *text = new Qt3DCore::QEntity(pRootEntity);
 // stvaram tekst objekt
@@ -260,6 +257,47 @@ void Qt3DWindow::AddText(const QString& str, const QVector3D& pos, Qt3DExtras::Q
 // mičem tekst objekt
     Qt3DCore::QTransform *textTransform = new Qt3DCore::QTransform();
     textTransform->setTranslation(pos);
-    textTransform->setScale(0.5f);
+    textTransform->setScale(scale);
     text->addComponent(textTransform);
+}
+
+void Qt3DWindow::DrawLines(Bounds bounds) {
+    vector <QVector3D> lines;
+    array <QVector3D, 8> points;
+
+    points[0] = QVector3D(bounds.leftX, bounds.bottomY, bounds.backZ);
+    points[1] = QVector3D(bounds.leftX, bounds.bottomY, bounds.frontZ);
+    points[2] = QVector3D(bounds.leftX, bounds.topY, bounds.backZ);
+    points[3] = QVector3D(bounds.leftX, bounds.topY, bounds.frontZ);
+    points[4] = QVector3D(bounds.rightX, bounds.bottomY, bounds.backZ);
+    points[5] = QVector3D(bounds.rightX, bounds.bottomY, bounds.frontZ);
+    points[6] = QVector3D(bounds.rightX, bounds.topY, bounds.backZ);
+    points[7] = QVector3D(bounds.rightX, bounds.topY, bounds.frontZ);
+
+    lines.push_back(points[0]);
+    lines.push_back(points[1]);
+    lines.push_back(points[2]);
+    lines.push_back(points[3]);
+    lines.push_back(points[0]);
+    lines.push_back(points[2]);
+    lines.push_back(points[1]);
+    lines.push_back(points[3]);
+    lines.push_back(points[4]);
+    lines.push_back(points[5]);
+    lines.push_back(points[6]);
+    lines.push_back(points[7]);
+    lines.push_back(points[4]);
+    lines.push_back(points[6]);
+    lines.push_back(points[5]);
+    lines.push_back(points[7]);
+    lines.push_back(points[0]);
+    lines.push_back(points[4]);
+    lines.push_back(points[2]);
+    lines.push_back(points[6]);
+    lines.push_back(points[1]);
+    lines.push_back(points[5]);
+    lines.push_back(points[3]);
+    lines.push_back(points[7]);
+
+    this->AddLines(lines);
 }

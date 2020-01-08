@@ -1,24 +1,28 @@
 #include "../include/octree.hpp"
 #include "../include/vertex.hpp"
 #include "../include/bounds.hpp"
+#include "../include/guiQt3D.hpp"
+#include <iostream>
 #include <algorithm>
 #include <string>
 #include <array>
-#include <iostream>
+#include <QVector3D>
+
 
 using namespace std;
 
+string Octree::octants[8] = {"TFR", "TFL", "TBL", "TBR", "BFR", "BFL", "BBL", "BBR"};
 
 Bounds findBounds(vector <Vertex> Vertices)
 {
     Bounds bounds;
 
-    bounds.topY = (*max_element(Vertices.begin(), Vertices.end(), compare_y)).get_coordinates()[1];
-    bounds.bottomY = (*min_element(Vertices.begin(), Vertices.end(), compare_y)).get_coordinates()[1];
-    bounds.leftX = (*min_element(Vertices.begin(), Vertices.end(), compare_x)).get_coordinates()[0];
-    bounds.rightX = (*max_element(Vertices.begin(), Vertices.end(), compare_x)).get_coordinates()[0];
-    bounds.frontZ = (*max_element(Vertices.begin(), Vertices.end(), compare_z)).get_coordinates()[2];
-    bounds.backZ = (*min_element(Vertices.begin(), Vertices.end(), compare_z)).get_coordinates()[2];
+    bounds.topY = (*max_element(Vertices.begin()+1, Vertices.end(), compare_y)).get_coordinates()[1];
+    bounds.bottomY = (*min_element(Vertices.begin()+1, Vertices.end(), compare_y)).get_coordinates()[1];
+    bounds.leftX = (*min_element(Vertices.begin()+1, Vertices.end(), compare_x)).get_coordinates()[0];
+    bounds.rightX = (*max_element(Vertices.begin()+1, Vertices.end(), compare_x)).get_coordinates()[0];
+    bounds.frontZ = (*max_element(Vertices.begin()+1, Vertices.end(), compare_z)).get_coordinates()[2];
+    bounds.backZ = (*min_element(Vertices.begin()+1, Vertices.end(), compare_z)).get_coordinates()[2];
 
     return bounds;
 }
@@ -59,24 +63,9 @@ bool compare_z(const Vertex& v1, const Vertex& v2) {
     return Vertex(v1).get_coordinates()[2] < Vertex(v2).get_coordinates()[2];
 }
 
-Octree::Octree(vector <Vertex> Vertices)
-{
-    this->Vertices = Vertices;
-    level = 0;
-    this->bounds = findBounds(Vertices);
-    this->center = findCenter(bounds);
-
-    string octants[8] = {"TFR", "TFL", "TBL", "TBR", "BFR", "BFL", "BBL", "BBR"};
-
-    for (int i = 0; i < 8; i++) {
-        Children[i] = new Octree(this->Vertices, calculateBounds(octants[i], this->bounds, this->center), level);
-    }
-}
-
 Bounds calculateBounds(string octant, Bounds parentBounds, Vertex parentsCenter)
-{   //                      0           1          2
-    // string Octant :    [T/B]       [F/B]      [L/R]
-    //                 TOP/BOTTOM  FRONT/BACK  LEFT/RIGHT
+{
+    // string Octant : [T/B][F/B][R/L]
 
     Bounds bounds{};
 
@@ -100,34 +89,42 @@ Bounds calculateBounds(string octant, Bounds parentBounds, Vertex parentsCenter)
 
     if (octant[2] == 'R') {
         bounds.rightX = parentBounds.rightX;
-        bounds.leftX = parentsCenter.get_coordinates()[1];
+        bounds.leftX = parentsCenter.get_coordinates()[0];
     }
     else if (octant[2] == 'L') {
-        bounds.rightX = parentsCenter.get_coordinates()[1];
+        bounds.rightX = parentsCenter.get_coordinates()[0];
         bounds.leftX = parentBounds.leftX;
     }
 
     return bounds;
 }
 
-Octree::Octree(vector <Vertex> parentVertices, Bounds bounds, int level)
+Octree::Octree(vector <array <Vertex *, 3>> &triangles, Bounds bounds, int level,  Qt3DWindow * win, size_t totalTris)
 {
-    for (int i = 0; i < 8; i++)
-        Children[i] = nullptr;
+    this->bounds = bounds;
+    this->level = level + 1;
+    this->center = findCenter(this->bounds);
+    this->triangles = triangles;
 
-    if (parentVertices.size() > 20) {
-        for (auto vertex : parentVertices) {
-            if (vertex.vertexInsideBounds(bounds))
-                this->Vertices.push_back(vertex);
+    win->DrawLines(this->bounds);
+    win->AddText(QString::fromStdString(to_string(level)), 
+                 QVector3D(this->center.get_coordinates()[0], 
+                           this->center.get_coordinates()[1], 
+                           this->center.get_coordinates()[2]),
+                 win->pPhongRed, 2.0f*(1.0f/this->level));
+    
+    for (int i = 0; i<8; i++) {
+        vector <array <Vertex *, 3>> childTris;
+        Bounds childBounds = calculateBounds(this->octants[i], this->bounds, this->center);
+
+        for (auto triangle : this->triangles)
+            if (triangleInsideBounds(triangle, childBounds))
+                childTris.push_back(triangle);
+
+        if (childTris.size() < 0.8*triangles.size() && childTris.size() > 0.0015*totalTris) {
+            Children[i] = new Octree(childTris, calculateBounds(this->octants[i], this->bounds, this->center), this->level, win, totalTris);
         }
-
-        this->bounds = bounds;
-        this->level = level + 1;
-        this->center = findCenter(this->bounds);
-
-        string octants[8] = {"TFR", "TFL", "TBL", "TBR", "BFR", "BFL", "BBL", "BBR"};
-
-        for (int i = 0; i<8; i++)
-            Children[i] = new Octree(this->Vertices, calculateBounds(octants[i], this->bounds, this->center), this->level);
-    }
+        else
+            Children[i] = nullptr;
+    } 
 }

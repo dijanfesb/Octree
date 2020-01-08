@@ -4,12 +4,30 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "clean and make",
+            "label": "make",
             "type": "shell",
-            "command": "make clean && make",
+            "command": "make",
             "group": {
                 "kind": "build",
                 "isDefault": true
+            }
+        },
+        {
+            "label": "make clean",
+            "type": "shell",
+            "command": "make clean",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "qmake",
+            "type": "shell",
+            "command": "qmake",
+            "group": {
+                "kind": "build",
+                "isDefault": false
             }
         }
     ]
