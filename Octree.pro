@@ -9,7 +9,8 @@ SOURCES += \
     src/vertex.cpp \
     src/objfile.cpp \
     src/octree.cpp \
-    src/bounds.cpp
+    src/bounds.cpp \
+    src/octreeMainWindow.cpp
 
 HEADERS += \
     include/guiQt3D.hpp \
@@ -17,5 +18,6 @@ HEADERS += \
     include/objfile.hpp \
     include/faces.hpp \
     include/octree.hpp \
-    include/bounds.hpp
+    include/bounds.hpp \
+    include/octreeMainWindow.hpp
     

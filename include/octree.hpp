@@ -6,7 +6,6 @@
 #include "vertex.hpp"
 #include "bounds.hpp"
 #include "faces.hpp"
-#include "guiQt3D.hpp"
 
 class Octree {
 private:
@@ -17,7 +16,10 @@ private:
     static string octants[8];
     array <Octree *, 8> Children;
 public:
-    Octree(vector <array <Vertex *, 3>> &triangles_parent, Bounds bounds, int level, Qt3DWindow * win, size_t totalTris);
+    Octree(vector <array <Vertex *, 3>> &triangles_parent, Bounds bounds, size_t totalTris, int level = -1);
+    Bounds get_bounds();
+    int get_level();
+    array <Octree *, 8> get_children();
 };
 
 vector <array <Vertex *, 3>> findTrisInsideBounds(vector <array <Vertex *, 3>> triangles, Bounds bounds);

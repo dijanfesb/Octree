@@ -1,4 +1,5 @@
 #include "../include/guiQt3D.hpp"
+#include <bits/stdc++.h> 
 
 Qt3DWindow::Qt3DWindow(){
 // podesi boju pozadine
@@ -261,6 +262,39 @@ void Qt3DWindow::AddText(const QString& str, const QVector3D& pos, Qt3DExtras::Q
     text->addComponent(textTransform);
 }
 
+void Qt3DWindow::addTrisW(vector <array <Vertex *, 3>> &triangleVector)
+{
+    ulong step = 100;
+
+    if (triangleVector.size() > step) {
+        ulong offset = step;
+        ulong index = 0;
+
+        do {
+            vector <array <Vertex *, 3>> tempVec;
+            if (triangleVector.size() - offset > step) {
+                for (ulong i = index; i < offset; i++) {
+                    tempVec.push_back(triangleVector[i]);
+                    index++;
+                }
+                offset += step;
+            }
+            else
+            {
+                for (ulong i = index; i< triangleVector.size(); i++) {
+                    tempVec.push_back(triangleVector[i]);
+                    index++;
+                }
+                offset += triangleVector.size() - offset;
+
+            }
+            this->AddTris(tempVec);
+        } while (offset < triangleVector.size());
+    }
+    else
+        this->AddTris(triangleVector);
+}
+
 void Qt3DWindow::DrawLines(Bounds bounds) {
     vector <QVector3D> lines;
     array <QVector3D, 8> points;
@@ -276,28 +310,52 @@ void Qt3DWindow::DrawLines(Bounds bounds) {
 
     lines.push_back(points[0]);
     lines.push_back(points[1]);
+
     lines.push_back(points[2]);
     lines.push_back(points[3]);
+
     lines.push_back(points[0]);
     lines.push_back(points[2]);
+
     lines.push_back(points[1]);
     lines.push_back(points[3]);
+
     lines.push_back(points[4]);
     lines.push_back(points[5]);
+
     lines.push_back(points[6]);
     lines.push_back(points[7]);
+
     lines.push_back(points[4]);
     lines.push_back(points[6]);
     lines.push_back(points[5]);
+
     lines.push_back(points[7]);
     lines.push_back(points[0]);
     lines.push_back(points[4]);
+
     lines.push_back(points[2]);
     lines.push_back(points[6]);
+
     lines.push_back(points[1]);
     lines.push_back(points[5]);
+
     lines.push_back(points[3]);
     lines.push_back(points[7]);
 
     this->AddLines(lines);
+}
+
+void Qt3DWindow::DrawOctree(Octree * root, int minLevel, int maxLevel)
+{
+    maxLevel = (maxLevel == -1) ? INT_MAX : maxLevel;
+
+    if (root->get_level() > minLevel && root->get_level() < maxLevel) {
+        this->DrawLines(root->get_bounds());
+
+        for (auto subtree : root->get_children()) {
+            if (subtree)
+                this->DrawOctree(subtree, minLevel, maxLevel);
+        }
+    }
 }

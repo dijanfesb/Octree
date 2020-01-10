@@ -13,6 +13,7 @@
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 
 #include "vertex.hpp"
+#include "octree.hpp"
 
 #include <vector>
 #include <array>
@@ -23,7 +24,9 @@ class Qt3DWindow : public Qt3DExtras::Qt3DWindow {
 public:
     Qt3DWindow();
 
-    void AddTris(vector <array <Vertex *, 3>> &triangleVector_Ext);
+    void AddTris(vector <array <Vertex *, 3>> &triangleVector_Ext); // Do 30000 trokuta
+    void addTrisW(vector <array <Vertex *, 3>> &triangleVector);
+    void DrawOctree(Octree * root, int minLevel = -1, int maxLevel = -1); // min i max = -1 -> nema granica
     void AddLines(vector <QVector3D> lines);
     void DrawLines(Bounds bounds);
     void AddText(const QString& str, const QVector3D& pos, Qt3DExtras::QPhongMaterial* pMat, float scale);

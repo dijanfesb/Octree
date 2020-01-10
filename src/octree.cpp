@@ -1,12 +1,10 @@
 #include "../include/octree.hpp"
 #include "../include/vertex.hpp"
 #include "../include/bounds.hpp"
-#include "../include/guiQt3D.hpp"
 #include <iostream>
 #include <algorithm>
 #include <string>
 #include <array>
-#include <QVector3D>
 
 
 using namespace std;
@@ -99,20 +97,13 @@ Bounds calculateBounds(string octant, Bounds parentBounds, Vertex parentsCenter)
     return bounds;
 }
 
-Octree::Octree(vector <array <Vertex *, 3>> &triangles, Bounds bounds, int level,  Qt3DWindow * win, size_t totalTris)
+Octree::Octree(vector <array <Vertex *, 3>> &triangles_parent, Bounds bounds, size_t totalTris, int level)
 {
     this->bounds = bounds;
     this->level = level + 1;
     this->center = findCenter(this->bounds);
-    this->triangles = triangles;
+    this->triangles = triangles_parent;
 
-    win->DrawLines(this->bounds);
-    win->AddText(QString::fromStdString(to_string(level)), 
-                 QVector3D(this->center.get_coordinates()[0], 
-                           this->center.get_coordinates()[1], 
-                           this->center.get_coordinates()[2]),
-                 win->pPhongRed, 2.0f*(1.0f/this->level));
-    
     for (int i = 0; i<8; i++) {
         vector <array <Vertex *, 3>> childTris;
         Bounds childBounds = calculateBounds(this->octants[i], this->bounds, this->center);
@@ -122,9 +113,24 @@ Octree::Octree(vector <array <Vertex *, 3>> &triangles, Bounds bounds, int level
                 childTris.push_back(triangle);
 
         if (childTris.size() < 0.8*triangles.size() && childTris.size() > 0.0015*totalTris) {
-            Children[i] = new Octree(childTris, calculateBounds(this->octants[i], this->bounds, this->center), this->level, win, totalTris);
+            Children[i] = new Octree(childTris, calculateBounds(this->octants[i], this->bounds, this->center), totalTris, this->level);
         }
         else
             Children[i] = nullptr;
     } 
+}
+
+Bounds Octree::get_bounds()
+{
+    return this->bounds;
+}
+
+int Octree::get_level()
+{
+    return this->level;
+}
+
+array <Octree *, 8> Octree::get_children()
+{
+    return this->Children;
 }
