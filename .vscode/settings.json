@@ -9,6 +9,8 @@
         "qhboxlayout": "cpp",
         "variant": "cpp",
         "qt3dwindow": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "future": "cpp",
+        "thread": "cpp"
     }
 }

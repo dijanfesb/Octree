@@ -14,9 +14,9 @@ EQ            = =
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_3DEXTRAS_LIB -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DLOGIC_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
-CFLAGS        = -pipe -O2 -march=x86-64 -mtune=generic -O2 -pipe -fno-plt -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -O2 -march=x86-64 -mtune=generic -O2 -pipe -fno-plt -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
+DEFINES       = -DQT_WIDGETS_LIB -DQT_3DEXTRAS_LIB -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DLOGIC_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
+CFLAGS        = -pipe -g -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
+CXXFLAGS      = -pipe -g -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
 INCPATH       = -I. -isystem /usr/include/qt -isystem /usr/include/qt/QtWidgets -isystem /usr/include/qt/Qt3DExtras -isystem /usr/include/qt/Qt3DRender -isystem /usr/include/qt/Qt3DInput -isystem /usr/include/qt/Qt3DLogic -isystem /usr/include/qt/Qt3DCore -isystem /usr/include/qt/QtGui -isystem /usr/include/qt/QtNetwork -isystem /usr/include/qt/QtCore -I. -I/usr/lib/qt/mkspecs/linux-g++
 QMAKE         = /usr/bin/qmake
 DEL_FILE      = rm -f
@@ -39,7 +39,7 @@ COMPRESS      = gzip -9f
 DISTNAME      = Octree1.0.0
 DISTDIR = /home/adriano/Dokumenti/GitHub/Octree/.tmp/Octree1.0.0
 LINK          = g++
-LFLAGS        = -Wl,-O1 -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -Wl,-rpath-link,/usr/lib
+LFLAGS        = -Wl,-rpath-link,/usr/lib
 LIBS          = $(SUBLIBS) /usr/lib/libQt5Widgets.so /usr/lib/libQt53DExtras.so /usr/lib/libQt53DRender.so /usr/lib/libQt53DInput.so /usr/lib/libQt53DLogic.so /usr/lib/libQt53DCore.so /usr/lib/libQt5Gui.so /usr/lib/libQt5Network.so /usr/lib/libQt5Core.so -lGL -lpthread -lmd4c   
 AR            = ar cqs
 RANLIB        = 
@@ -688,7 +688,7 @@ compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
 moc_predefs.h: /usr/lib/qt/mkspecs/features/data/dummy.cpp
-	g++ -pipe -O2 -march=x86-64 -mtune=generic -O2 -pipe -fno-plt -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/qt/mkspecs/features/data/dummy.cpp
+	g++ -pipe -g -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/qt/mkspecs/features/data/dummy.cpp
 
 compiler_moc_header_make_all:
 compiler_moc_header_clean:
@@ -708,18 +708,18 @@ compiler_clean: compiler_moc_predefs_clean
 
 ####### Compile
 
-main.o: src/main.cpp include/faces.hpp \
-		include/vertex.hpp \
+main.o: src/main.cpp include/octree.hpp \
 		include/bounds.hpp \
-		include/objfile.hpp \
-		include/octree.hpp \
+		include/vertex.hpp \
+		include/faces.hpp \
+		include/octreeMainWindow.hpp \
 		include/guiQt3D.hpp \
-		include/octreeMainWindow.hpp
+		include/objfile.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o src/main.cpp
 
 guiQt3D.o: src/guiQt3D.cpp include/guiQt3D.hpp \
-		include/vertex.hpp \
 		include/bounds.hpp \
+		include/vertex.hpp \
 		include/octree.hpp \
 		include/faces.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o guiQt3D.o src/guiQt3D.cpp
@@ -734,24 +734,25 @@ vertex.o: src/vertex.cpp include/vertex.hpp \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o vertex.o src/vertex.cpp
 
 objfile.o: src/objfile.cpp include/objfile.hpp \
+		include/faces.hpp \
 		include/vertex.hpp \
-		include/bounds.hpp \
-		include/faces.hpp
+		include/bounds.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objfile.o src/objfile.cpp
 
 octree.o: src/octree.cpp include/octree.hpp \
-		include/vertex.hpp \
 		include/bounds.hpp \
+		include/vertex.hpp \
 		include/faces.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o octree.o src/octree.cpp
 
-bounds.o: src/bounds.cpp include/bounds.hpp
+bounds.o: src/bounds.cpp include/bounds.hpp \
+		include/vertex.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o bounds.o src/bounds.cpp
 
 octreeMainWindow.o: src/octreeMainWindow.cpp include/octreeMainWindow.hpp \
 		include/guiQt3D.hpp \
-		include/vertex.hpp \
 		include/bounds.hpp \
+		include/vertex.hpp \
 		include/octree.hpp \
 		include/faces.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o octreeMainWindow.o src/octreeMainWindow.cpp

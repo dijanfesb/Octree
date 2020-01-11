@@ -12,11 +12,12 @@
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
 
+#include <array>
+#include <vector>
+
+#include "bounds.hpp"
 #include "vertex.hpp"
 #include "octree.hpp"
-
-#include <vector>
-#include <array>
 
 using namespace std;
 

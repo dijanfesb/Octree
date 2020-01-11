@@ -3,7 +3,9 @@
 
 #include <vector>
 #include <array>
+
 #include "vertex.hpp"
+#include "bounds.hpp"
 
 using namespace std;
 

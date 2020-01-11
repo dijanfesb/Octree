@@ -1,11 +1,11 @@
 #include "../include/octree.hpp"
-#include "../include/vertex.hpp"
-#include "../include/bounds.hpp"
+
 #include <iostream>
 #include <algorithm>
 #include <string>
 #include <array>
-
+#include <thread>
+#include <future>
 
 using namespace std;
 
@@ -15,12 +15,12 @@ Bounds findBounds(vector <Vertex> Vertices)
 {
     Bounds bounds;
 
-    bounds.topY = (*max_element(Vertices.begin()+1, Vertices.end(), compare_y)).get_coordinates()[1];
-    bounds.bottomY = (*min_element(Vertices.begin()+1, Vertices.end(), compare_y)).get_coordinates()[1];
     bounds.leftX = (*min_element(Vertices.begin()+1, Vertices.end(), compare_x)).get_coordinates()[0];
     bounds.rightX = (*max_element(Vertices.begin()+1, Vertices.end(), compare_x)).get_coordinates()[0];
-    bounds.frontZ = (*max_element(Vertices.begin()+1, Vertices.end(), compare_z)).get_coordinates()[2];
+    bounds.bottomY = (*min_element(Vertices.begin()+1, Vertices.end(), compare_y)).get_coordinates()[1];
+    bounds.topY = (*max_element(Vertices.begin()+1, Vertices.end(), compare_y)).get_coordinates()[1];
     bounds.backZ = (*min_element(Vertices.begin()+1, Vertices.end(), compare_z)).get_coordinates()[2];
+    bounds.frontZ = (*max_element(Vertices.begin()+1, Vertices.end(), compare_z)).get_coordinates()[2];
 
     return bounds;
 }
@@ -133,4 +133,22 @@ int Octree::get_level()
 array <Octree *, 8> Octree::get_children()
 {
     return this->Children;
+}
+
+bool Octree::objectColision(Octree& t2)
+{
+    Octree * o1 = this;
+    Octree * o2 = &t2;
+
+    if (!o1->bounds.BoundsCollision(o2->bounds))
+        return false;
+
+    return true;
+}
+
+Octree * oTreeInsert(vector <array <Vertex *, 3>> triangles_parent, Bounds bounds, size_t totalTris, Octree ** returnVal, int level)
+{
+    Octree * pChild = new Octree(triangles_parent, bounds, totalTris, level);
+    *returnVal = pChild;
+    return 0;
 }

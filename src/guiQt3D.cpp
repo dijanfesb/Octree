@@ -1,5 +1,6 @@
 #include "../include/guiQt3D.hpp"
-#include <bits/stdc++.h> 
+
+#include <limits> 
 
 Qt3DWindow::Qt3DWindow(){
 // podesi boju pozadine
@@ -20,6 +21,7 @@ Qt3DWindow::Qt3DWindow(){
     this->pMyWidget = QWidget::createWindowContainer(this);
     this->setFlags(Qt::FramelessWindowHint);
 }
+
 void Qt3DWindow::CreateRootEntity(){
 // Root entity
     pRootEntity = new Qt3DCore::QEntity();
@@ -49,28 +51,6 @@ void Qt3DWindow::CreateRootEntity(){
     pPhongWhite->setDiffuse(QColor::fromRgbF(1.0, 1.0, 1.0, 1.0));
 // font
     pCourier = new QFont("Courier New", 32, 75, false);
-// stvaranje geometrije
-    if(this->showTris){
-        // vector <array <QVector3D, 3>> triangleVector;
-        // array <QVector3D, 3> face;
-        // face[0] = QVector3D(1.0f, 0.0f, 0.0f);
-        // face[1] = QVector3D(-1.0f, 0.0f, 0.0f);
-        // face[2] = QVector3D(0.0f, -1.0f, 1.0f);
-        // triangleVector.push_back(face);
-        // face[0] = QVector3D(-1.0f, 0.0f, 0.0f);
-        // face[1] = QVector3D(1.0f,  0.0f, 0.0f);
-        // face[2] = QVector3D(0.0f, 1.0f, 0.0f);
-		// triangleVector.push_back(face);
-		// face[0] = QVector3D(-1.0f, 5.0f, 0.0f);
-		// face[1] = QVector3D(1.0f, 5.0f, 0.0f);
-		// face[2] = QVector3D(0.0f, 6.0f, 0.0f);
-        // triangleVector.push_back(face);
-        // this->AddTris(triangleVector);
-    }
-    // this->AddLines();
-    // this->AddText("x", QVector3D(2, 0, 0), pPhongRed);
-    // this->AddText("y", QVector3D(0, 2, 0), pPhongGreen);
-    // this->AddText("z", QVector3D(0, 0, 2), pPhongBlue);
 // postavi geometriju
     this->setRootEntity(pRootEntity);
 }
@@ -80,11 +60,9 @@ void Qt3DWindow::AddTris(vector <array <Vertex *, 3>> &triangleVector_Ext) {
 
     for(auto triangle : triangleVector_Ext) {
         array <QVector3D, 3> tempQVector;
-        for (int j=0; j<3; j++) {
-            tempQVector[j] = QVector3D(triangle[j]->get_coordinates()[0],
-                                       triangle[j]->get_coordinates()[1],
-                                       triangle[j]->get_coordinates()[2]);
-        }
+        for (int j=0; j<3; j++)
+            tempQVector[j] = triangle[j]->toQVector3D();
+
         triangleVector.push_back(tempQVector);
     }
 
@@ -102,9 +80,8 @@ void Qt3DWindow::AddTris(vector <array <Vertex *, 3>> &triangleVector_Ext) {
 	    tn = QVector3D::normal(it[0], it[1], it[2]);
 	    trisVertices << it[0] << tn;
 	    trisVertices << it[1] << tn;
-	    trisVertices << it[2] << tn;    void AddLines();
-
-	}
+	    trisVertices << it[2] << tn;
+    }
 // punim vertex buffer
 	QByteArray trisVertexBufferData;
 // broj koordinata i normala (broj trokuta * 3 vrha * (3 koordinate + 3 normale))
@@ -186,13 +163,6 @@ void Qt3DWindow::AddLines(vector <QVector3D> lines) {
 // qt3d vertex i index baferi
     Qt3DRender::QBuffer *linesVertexDataBuffer = new Qt3DRender::QBuffer(linesGeometry);
     Qt3DRender::QBuffer *linesIndexDataBuffer = new Qt3DRender::QBuffer(linesGeometry);
-// vrhovi
-    // QVector3D lv0(-200.0f, 0.0f, 0.0f);
-    // QVector3D lv1(200.0f, 0.0f, 0.0f);
-    // QVector3D lv2(0.0f, -200.0f, 0.0f);
-    // QVector3D lv3(0.0f, 200.0f, 0.0f);
-    // QVector3D lv4(0.0f, 0.0f, -200.0f);
-    // QVector3D lv5(0.0f, 0.0f, 200.0f);
 // vektor sa koordinatama
     QVector<QVector3D> linesVertices;
 
@@ -297,51 +267,43 @@ void Qt3DWindow::addTrisW(vector <array <Vertex *, 3>> &triangleVector)
 
 void Qt3DWindow::DrawLines(Bounds bounds) {
     vector <QVector3D> lines;
-    array <QVector3D, 8> points;
+    array <Vertex, 8> points = bounds.getCorners();
 
-    points[0] = QVector3D(bounds.leftX, bounds.bottomY, bounds.backZ);
-    points[1] = QVector3D(bounds.leftX, bounds.bottomY, bounds.frontZ);
-    points[2] = QVector3D(bounds.leftX, bounds.topY, bounds.backZ);
-    points[3] = QVector3D(bounds.leftX, bounds.topY, bounds.frontZ);
-    points[4] = QVector3D(bounds.rightX, bounds.bottomY, bounds.backZ);
-    points[5] = QVector3D(bounds.rightX, bounds.bottomY, bounds.frontZ);
-    points[6] = QVector3D(bounds.rightX, bounds.topY, bounds.backZ);
-    points[7] = QVector3D(bounds.rightX, bounds.topY, bounds.frontZ);
+    lines.push_back(points[0].toQVector3D());
+    lines.push_back(points[1].toQVector3D());
 
-    lines.push_back(points[0]);
-    lines.push_back(points[1]);
+    lines.push_back(points[2].toQVector3D());
+    lines.push_back(points[3].toQVector3D());
 
-    lines.push_back(points[2]);
-    lines.push_back(points[3]);
+    lines.push_back(points[0].toQVector3D());
+    lines.push_back(points[2].toQVector3D());
 
-    lines.push_back(points[0]);
-    lines.push_back(points[2]);
+    lines.push_back(points[1].toQVector3D());
+    lines.push_back(points[3].toQVector3D());
 
-    lines.push_back(points[1]);
-    lines.push_back(points[3]);
+    lines.push_back(points[4].toQVector3D());
+    lines.push_back(points[5].toQVector3D());
 
-    lines.push_back(points[4]);
-    lines.push_back(points[5]);
+    lines.push_back(points[6].toQVector3D());
+    lines.push_back(points[7].toQVector3D());
 
-    lines.push_back(points[6]);
-    lines.push_back(points[7]);
+    lines.push_back(points[4].toQVector3D());
+    lines.push_back(points[6].toQVector3D());
 
-    lines.push_back(points[4]);
-    lines.push_back(points[6]);
-    lines.push_back(points[5]);
+    lines.push_back(points[5].toQVector3D());
+    lines.push_back(points[7].toQVector3D());
 
-    lines.push_back(points[7]);
-    lines.push_back(points[0]);
-    lines.push_back(points[4]);
+    lines.push_back(points[0].toQVector3D());
+    lines.push_back(points[4].toQVector3D());
 
-    lines.push_back(points[2]);
-    lines.push_back(points[6]);
+    lines.push_back(points[2].toQVector3D());
+    lines.push_back(points[6].toQVector3D());
 
-    lines.push_back(points[1]);
-    lines.push_back(points[5]);
+    lines.push_back(points[1].toQVector3D());
+    lines.push_back(points[5].toQVector3D());
 
-    lines.push_back(points[3]);
-    lines.push_back(points[7]);
+    lines.push_back(points[3].toQVector3D());
+    lines.push_back(points[7].toQVector3D());
 
     this->AddLines(lines);
 }

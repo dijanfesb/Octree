@@ -4,8 +4,10 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QVBoxLayout>
+
 #include "guiQt3D.hpp"
 
+using namespace std;
 class OctreeMainWindow : public QMainWindow {
     public:
         OctreeMainWindow();

@@ -1,20 +1,20 @@
-#include "../include/faces.hpp"
-#include "../include/objfile.hpp"
-#include "../include/vertex.hpp"
-#include "../include/octree.hpp"
-#include "../include/guiQt3D.hpp"
-#include "../include/octreeMainWindow.hpp"
-
 #include <iostream>
 #include <chrono>
 #include <QApplication>
 #include <QMainWindow>
 #include <fstream>
+#include <thread>
+
+#include "../include/octree.hpp"
+#include "../include/bounds.hpp"
+#include "../include/vertex.hpp"
+#include "../include/octreeMainWindow.hpp"
+#include "../include/guiQt3D.hpp"
+#include "../include/objfile.hpp"
 
 using namespace std;
 
 typedef array <Vertex *, 3> triangle;
-void addTrisW(Qt3DWindow * pClass, vector <triangle> &triangleVector);
 
 bool fileExists (const std::string& name) {
     ifstream f(name.c_str());
@@ -77,6 +77,7 @@ int main(int argc, char *argv[])
     duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
     cout << duration << " ms" << endl;
 
+
     cout << "Stvaram prvo stablo :: ";
     t1 = chrono::high_resolution_clock::now();
     Octree tree1(file1.triangleVector, findBounds(file1.get_vertexVector()), file1.triangleVector.size());
@@ -104,6 +105,8 @@ int main(int argc, char *argv[])
     t2 = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
     cout << duration << " ms" << endl;
+
+    cout << (tree1.objectColision(tree2) ? "Sudar" : "Nema sudara") << endl;
 
     mainWindow.resize(1024, 800);
     mainWindow.show();

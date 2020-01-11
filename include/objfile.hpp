@@ -1,9 +1,9 @@
 #ifndef OBJFILE_HPP
 #define OBJFILE_HPP
 
-#include "vertex.hpp"
-#include "faces.hpp"
 #include <vector>
+
+#include "faces.hpp"
 
 class ObjFile
 {

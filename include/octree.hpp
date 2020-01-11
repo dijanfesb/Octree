@@ -3,25 +3,27 @@
 
 #include <vector>
 #include <array>
-#include "vertex.hpp"
-#include "bounds.hpp"
-#include "faces.hpp"
 
+#include "bounds.hpp"
+#include "vertex.hpp"
+#include "faces.hpp"
 class Octree {
 private:
     vector <array <Vertex *, 3>> triangles;
     int level;
     Vertex center;
     Bounds bounds;
-    static string octants[8];
     array <Octree *, 8> Children;
 public:
+    static string octants[8];
     Octree(vector <array <Vertex *, 3>> &triangles_parent, Bounds bounds, size_t totalTris, int level = -1);
     Bounds get_bounds();
     int get_level();
     array <Octree *, 8> get_children();
+    bool objectColision(Octree& t2);
 };
 
+Octree * oTreeInsert(vector <array <Vertex *, 3>> triangles_parent, Bounds bounds, size_t totalTris, Octree ** returnVal, int level);
 vector <array <Vertex *, 3>> findTrisInsideBounds(vector <array <Vertex *, 3>> triangles, Bounds bounds);
 Vertex findCenter(Bounds bounds);
 Bounds findBounds(vector <Vertex> Vertices);

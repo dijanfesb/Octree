@@ -1,6 +1,5 @@
 #include "../include/objfile.hpp"
-#include "../include/vertex.hpp"
-#include "../include/faces.hpp"
+
 #include <vector>
 #include <string>
 #include <fstream>
