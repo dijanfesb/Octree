@@ -97,6 +97,43 @@ Bounds calculateBounds(const char * octant, Bounds parentBounds, Vertex parentsC
     return bounds;
 }
 
+Octree::Octree(vector <array <Vertex *, 3>> &triangles_parent, vector <Vertex>& vertexVector)
+{
+    this->bounds = findBounds(vertexVector);
+    this->level = 0;
+    this->center = findCenter(this->bounds);
+    this->triangles = triangles_parent;
+    size_t totalTris = triangles_parent.size();
+
+    array <Octree *, 8> children;
+    array <thread * , 8> threads = {nullptr};
+
+    for (int i = 0; i<8; i++) {
+        vector <array <Vertex *, 3>> childTris;
+        Bounds childBounds = calculateBounds(this->octants[i], this->bounds, this->center);
+
+        for (auto triangle : this->triangles)
+            if (triangleInsideBounds(triangle, childBounds))
+                childTris.push_back(triangle);
+
+        if (childTris.size() < 0.8*triangles.size() && childTris.size() > (0.25/100)*totalTris) {
+            threads[i] = new thread(oTreeInsert, childTris, childBounds, totalTris, &children[i], this->level);
+        }
+        else
+            children[i] = nullptr;
+    }
+
+    for (auto thr : threads) {
+        if (thr)
+            thr->join();
+    }
+
+    for (int i = 0; i<8; i++) {
+        Children[i] = children[i];
+    }
+
+}
+
 Octree::Octree(vector <array <Vertex *, 3>> &triangles_parent, Bounds bounds, size_t totalTris, int level)
 {
     this->bounds = bounds;

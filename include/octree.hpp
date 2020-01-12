@@ -16,6 +16,7 @@ private:
     array <Octree *, 8> Children;
 public:
     static const char *octants[8];
+    Octree(vector <array <Vertex *, 3>> &triangles_parent, vector <Vertex>& vertexVector);
     Octree(vector <array <Vertex *, 3>> &triangles_parent, Bounds bounds, size_t totalTris, int level = -1);
     Bounds get_bounds();
     int get_level();

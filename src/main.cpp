@@ -81,14 +81,14 @@ int main(int argc, char *argv[])
 
     *(mainWindow.pLogBox) << "Stvaram prvo stablo :: ";
     t1 = chrono::high_resolution_clock::now();
-    Octree tree1(file1.triangleVector, findBounds(file1.get_vertexVector()), file1.triangleVector.size());
+    Octree tree1(file1.triangleVector, file1.vertexVector);
     t2 = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
 
     *(mainWindow.pLogBox) << "Stvaram drugo stablo :: ";
     t1 = chrono::high_resolution_clock::now();
-    Octree tree2(file2.triangleVector, findBounds(file2.get_vertexVector()), file2.triangleVector.size());
+    Octree tree2(file2.triangleVector, file2.vertexVector);
     t2 = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
