@@ -9,12 +9,12 @@ class ObjFile
 {
     private:
         string name;
-        vector <Vertex> vertexVector;                    // Vector svih vertexa
         vector <Faces> facesVector;                      // Vector svih faceova
     public:       
         ObjFile(string filename);
         vector <Vertex> get_vertexVector();
         vector <array <Vertex *, 3>> triangleVector;     // Vektor trokuta
+        vector <Vertex> vertexVector;                    // Vector svih vertexa
         vector <array <Vertex *, 3>> buildTriangleVector();
         void move(double x, double y, double z);
 };

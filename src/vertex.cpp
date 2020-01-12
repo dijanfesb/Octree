@@ -44,7 +44,7 @@ array <double, 3> Vertex::get_coordinates()
     return temp;
 }
 
-bool Vertex::vertexInsideBounds(Bounds bounds)
+bool Vertex::vertexInsideBounds(Bounds& bounds)
 {
     return (this->x >= bounds.leftX)  &&  (this->x <= bounds.rightX) &&
            (this->y >= bounds.bottomY) && (this->y <= bounds.topY) &&

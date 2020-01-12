@@ -19,7 +19,7 @@ class Vertex
         array <double, 3> get_coordinates();
         Vertex(double _x = 0, double  _y = 0, double _z = 0);
         int set_coordinates(double _x, double _y, double _z);
-        bool vertexInsideBounds(Bounds bounds);
+        bool vertexInsideBounds(Bounds& bounds);
         QVector3D toQVector3D();
 };
 

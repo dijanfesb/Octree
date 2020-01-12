@@ -14,7 +14,7 @@
 
 using namespace std;
 
-typedef array <Vertex *, 3> triangle;
+typedef array <Vertex*, 3> triangle;
 
 bool fileExists (const std::string& name) {
     ifstream f(name.c_str());
@@ -51,6 +51,9 @@ int main(int argc, char *argv[])
         return 2;
     }
 
+    *(mainWindow.pLogBox) << "Početak :: ";
+    auto startTime = chrono::high_resolution_clock::now();
+
     *(mainWindow.pLogBox) << "Učitavam prvi obj file :: ";
     auto t1 = chrono::high_resolution_clock::now();
     ObjFile file1 (filename1);
@@ -81,31 +84,35 @@ int main(int argc, char *argv[])
 
     *(mainWindow.pLogBox) << "Stvaram prvo stablo :: ";
     t1 = chrono::high_resolution_clock::now();
-    Octree tree1(file1.triangleVector, findBounds(file1.get_vertexVector()), file1.triangleVector.size());
+    Octree tree1(file1.triangleVector, file1.vertexVector);
     t2 = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
 
     *(mainWindow.pLogBox) << "Stvaram drugo stablo :: ";
     t1 = chrono::high_resolution_clock::now();
-    Octree tree2(file2.triangleVector, findBounds(file2.get_vertexVector()), file2.triangleVector.size());
+    Octree tree2(file2.triangleVector, file2.vertexVector);
     t2 = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
     
     *(mainWindow.pLogBox) << "Crtam prvi octree :: ";
     t1 = chrono::high_resolution_clock::now();
-    p3DWidget->DrawOctree(&tree1);
+    p3DWidget->DrawOctree(&tree1, 0, 3);
     t2 = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
 
     *(mainWindow.pLogBox) << "Crtam drugi octree :: ";
     t1 = chrono::high_resolution_clock::now();
-    p3DWidget->DrawOctree(&tree2);
+    p3DWidget->DrawOctree(&tree2, 0, 3);
     t2 = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
+
+    auto endTime = chrono::high_resolution_clock::now();
+    auto startToEnd = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
+    *(mainWindow.pLogBox) << startToEnd << " ms" << "\n";
 
     *(mainWindow.pLogBox) << (tree1.objectColision(tree2) ? "Sudar" : "Nema sudara") << "\n";
 

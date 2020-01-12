@@ -18,7 +18,8 @@ Faces::Faces(string fLine)
 
     int tempArr[3] = {0};
 
-    sscanf(cString, "f %d%*s %d%*s %d%*s", &tempArr[0], &tempArr[1], &tempArr[2]);
+    if (sscanf(cString, "f %d%*s %d%*s %d%*s", &tempArr[0], &tempArr[1], &tempArr[2]) < 3)
+        sscanf(cString, "f %d %d %d", &tempArr[0], &tempArr[1], &tempArr[2]);
 
     for (int i=0; i<3; i++)
         faceIndices[i] = tempArr[i];
