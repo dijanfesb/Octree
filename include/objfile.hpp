@@ -15,6 +15,8 @@ class ObjFile
         ObjFile(string filename);
         vector <Vertex> get_vertexVector();
         vector <array <Vertex *, 3>> triangleVector;     // Vektor trokuta
+        vector <array <Vertex *, 3>> buildTriangleVector();
+        void move(double x, double y, double z);
 };
 
 #endif

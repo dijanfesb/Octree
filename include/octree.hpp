@@ -15,7 +15,7 @@ private:
     Bounds bounds;
     array <Octree *, 8> Children;
 public:
-    static string octants[8];
+    static const char *octants[8];
     Octree(vector <array <Vertex *, 3>> &triangles_parent, Bounds bounds, size_t totalTris, int level = -1);
     Bounds get_bounds();
     int get_level();
@@ -27,7 +27,7 @@ Octree * oTreeInsert(vector <array <Vertex *, 3>> triangles_parent, Bounds bound
 vector <array <Vertex *, 3>> findTrisInsideBounds(vector <array <Vertex *, 3>> triangles, Bounds bounds);
 Vertex findCenter(Bounds bounds);
 Bounds findBounds(vector <Vertex> Vertices);
-Bounds calculateBounds(string octant, Bounds parentBounds, Vertex parentsCenter);
+Bounds calculateBounds(const char * octant, Bounds parentBounds, Vertex parentsCenter);
 bool compare_x(const Vertex& v1, const Vertex& v2);
 bool compare_y(const Vertex& v1, const Vertex& v2);
 bool compare_z(const Vertex& v1, const Vertex& v2);

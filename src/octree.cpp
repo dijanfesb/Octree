@@ -9,7 +9,7 @@
 
 using namespace std;
 
-string Octree::octants[8] = {"TFR", "TFL", "TBL", "TBR", "BFR", "BFL", "BBL", "BBR"};
+const char *Octree::octants[8] = {"TFR", "TFL", "TBL", "TBR", "BFR", "BFL", "BBL", "BBR"};
 
 Bounds findBounds(vector <Vertex> Vertices)
 {
@@ -61,7 +61,7 @@ bool compare_z(const Vertex& v1, const Vertex& v2) {
     return Vertex(v1).get_coordinates()[2] < Vertex(v2).get_coordinates()[2];
 }
 
-Bounds calculateBounds(string octant, Bounds parentBounds, Vertex parentsCenter)
+Bounds calculateBounds(const char * octant, Bounds parentBounds, Vertex parentsCenter)
 {
     // string Octant : [T/B][F/B][R/L]
 
@@ -112,7 +112,7 @@ Octree::Octree(vector <array <Vertex *, 3>> &triangles_parent, Bounds bounds, si
             if (triangleInsideBounds(triangle, childBounds))
                 childTris.push_back(triangle);
 
-        if (childTris.size() < 0.8*triangles.size() && childTris.size() > 0.0015*totalTris) {
+        if (childTris.size() < 0.9*triangles.size() && childTris.size() > (0.025/100)*totalTris) {
             Children[i] = new Octree(childTris, calculateBounds(this->octants[i], this->bounds, this->center), totalTris, this->level);
         }
         else

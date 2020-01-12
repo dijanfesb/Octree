@@ -54,3 +54,15 @@ vector <Vertex> ObjFile::get_vertexVector()
 {
     return this->vertexVector;
 }
+
+void ObjFile::move(double x, double y, double z)
+{
+    for (auto vertex : this->vertexVector) {
+        auto coordinates = vertex.get_coordinates();
+        double _x = coordinates[0];
+        double _y = coordinates[1];
+        double _z = coordinates[1];
+
+        vertex.set_coordinates(x+_x, y+_y, z+_z);
+    }
+}

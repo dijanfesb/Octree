@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/Octree",
-            "args": ["/home/adriano/Dokumenti/Blender/spiderman2.obj", "/home/adriano/Dokumenti/Blender/Kocka.obj"],
+            "args": ["/home/adriano/Dokumenti/Blender/SpidermanCMP.obj", "/home/adriano/Dokumenti/Blender/ShrekCMP.obj"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

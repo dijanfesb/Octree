@@ -18,6 +18,7 @@
 #include "bounds.hpp"
 #include "vertex.hpp"
 #include "octree.hpp"
+#include "objfile.hpp"
 
 using namespace std;
 
@@ -25,11 +26,12 @@ class Qt3DWindow : public Qt3DExtras::Qt3DWindow {
 public:
     Qt3DWindow();
 
-    void AddTris(vector <array <Vertex *, 3>> &triangleVector_Ext); // Do 30000 trokuta
-    void addTrisW(vector <array <Vertex *, 3>> &triangleVector);
+    void AddTris(vector <array <Vertex *, 3>> &triangleVector_Ext, Qt3DExtras::QPhongMaterial * material); // Do 30000 trokuta
+    void addTrisW(vector <array <Vertex *, 3>> &triangleVector_Ext, Qt3DExtras::QPhongMaterial * material);
+    void AddLines(vector <QVector3D> lines, Qt3DExtras::QPhongMaterial* material);
     void DrawOctree(Octree * root, int minLevel = -1, int maxLevel = -1); // min i max = -1 -> nema granica
-    void AddLines(vector <QVector3D> lines);
-    void DrawLines(Bounds bounds);
+    void DrawLines(Bounds bounds, Qt3DExtras::QPhongMaterial * material);
+    void DrawWireframe(vector <array <Vertex *, 3>> &triangleVector_Ext);
     void AddText(const QString& str, const QVector3D& pos, Qt3DExtras::QPhongMaterial* pMat, float scale);
     void CreateRootEntity();
 
@@ -37,12 +39,24 @@ public:
     Qt3DCore::QEntity* pRootEntity;
     Qt3DRender::QCamera* pCamera;
     Qt3DExtras::QPhongMaterial* pSpecularWhite;
+    Qt3DExtras::QPhongMaterial* pSpecularYellow;
+    Qt3DExtras::QPhongMaterial* pSpecularGreen;
+    Qt3DExtras::QPhongMaterial* pSpecularBlue;    
+    Qt3DExtras::QPhongMaterial* pSpecularRed;
     Qt3DExtras::QPhongMaterial* pPhongRed;
     Qt3DExtras::QPhongMaterial* pPhongGreen;
     Qt3DExtras::QPhongMaterial* pPhongBlue;
     Qt3DExtras::QPhongMaterial* pPhongWhite;
+
+    ObjFile* pObjFile1;
+    ObjFile* pObjFile2;
+
+    Octree* pTree1;
+    Octree* pTree2;
+
     QFont* pCourier;
 
     bool showTris;
+    bool showTree;
 };
 #endif // Qt3DWindow_H
