@@ -2,8 +2,6 @@ QT += core gui
 QT += widgets
 QT += 3dcore 3drender 3dinput 3dextras
 
-CONFIG += debug
-
 SOURCES += \
     src/main.cpp \
     src/guiQt3D.cpp \

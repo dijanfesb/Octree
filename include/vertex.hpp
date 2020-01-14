@@ -21,6 +21,11 @@ class Vertex
         int set_coordinates(double _x, double _y, double _z);
         bool vertexInsideBounds(Bounds bounds);
         QVector3D toQVector3D();
+
+        Vertex operator - (Vertex v2); 
+        Vertex operator + (Vertex v2);
+        double operator * (Vertex v2); // Skalarni produkt
+        Vertex operator & (Vertex v2); // Vektorski produkt
 };
 
 #endif

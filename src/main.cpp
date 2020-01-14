@@ -95,19 +95,19 @@ int main(int argc, char *argv[])
     
     *(mainWindow.pLogBox) << "Crtam prvi octree :: ";
     t1 = chrono::high_resolution_clock::now();
-    p3DWidget->DrawOctree(&tree1);
+    p3DWidget->DrawOctree(&tree1, 0, 3);
     t2 = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
 
     *(mainWindow.pLogBox) << "Crtam drugi octree :: ";
     t1 = chrono::high_resolution_clock::now();
-    p3DWidget->DrawOctree(&tree2);
+    p3DWidget->DrawOctree(&tree2, 0, 3);
     t2 = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
 
-    *(mainWindow.pLogBox) << (tree1.objectColision(tree2) ? "Sudar" : "Nema sudara") << "\n";
+    *(mainWindow.pLogBox) << (tree1.octreeCollides(tree2)) << "\n";
 
     p3DWidget->pObjFile1 = &file1;
     p3DWidget->pObjFile2 = &file2;
