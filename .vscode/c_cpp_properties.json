@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/usr/include/qt/**"
+                "/usr/include/qt/**",
+                "/usr/include/CGAL/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",

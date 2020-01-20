@@ -64,3 +64,9 @@ bool triangleInsideBounds(array <Vertex *, 3> triangle, Bounds bounds)
 
     return false;
 }
+
+Kernel::Triangle_3 toTriangle3(array <Vertex *, 3> triangle)
+{
+    return Kernel::Triangle_3(triangle[0]->toPoint3(), triangle[1]->toPoint3(), triangle[2]->toPoint3());
+}
+

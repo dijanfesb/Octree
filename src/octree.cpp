@@ -209,10 +209,10 @@ bool Octree::octreeCollides(Octree& o2)
         if (t1.bounds.BoundsCollision(t2.bounds)) {
             switch (childrenRelation(t1, t2)) {
             case 0:
-                for (auto triangle : t1.triangles)
-                    for (auto triangle : t2.triangles) {
-                        /* TODO */
-                        cout << "Presjek " << ++i << endl; // Triangle intersect
+                for (auto triangle1 : t1.triangles)
+                    for (auto triangle2 : t2.triangles) {
+                        if (intersection(toTriangle3(triangle1), toTriangle3(triangle2)))
+                            return true;
                     }
                 break;
             case 1:

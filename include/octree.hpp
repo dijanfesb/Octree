@@ -7,6 +7,9 @@
 #include "bounds.hpp"
 #include "vertex.hpp"
 #include "faces.hpp"
+
+#include <CGAL/intersections.h>
+
 class Octree {
 private:
     vector <array <Vertex *, 3>> triangles;

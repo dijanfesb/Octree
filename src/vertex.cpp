@@ -7,6 +7,8 @@
 
 using namespace std;
 
+typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
+
 Vertex::Vertex(double _x, double  _y, double _z)
 {
     this->x = _x;
@@ -56,26 +58,7 @@ QVector3D Vertex::toQVector3D()
     return QVector3D(this->x, this->y, this->z);
 }
 
-Vertex Vertex::operator - (Vertex v2) 
+Kernel::Point_3 Vertex::toPoint3()
 {
-    return Vertex(this->x - v2.x, this->y - v2.y, this->z - v2.z);
-}
-
-Vertex Vertex::operator + (Vertex v2)
-{
-    return Vertex(this->x + v2.x, this->y + v2.y, this->z + v2.z);
-}
-
-double Vertex::operator * (Vertex v2) // Skalarni produkt
-{
-    return this->x * v2.x + this->y * v2.y + this->z * v2.z;
-}
-
-Vertex Vertex::operator & (Vertex v2) // Vektorski produkt
-{
-    double x = this->y*v2.z - v2.y*this->z;
-    double y = v2.x*this->z - this->x*v2.z;
-    double z = this->x*v2.y - v2.x*this->y;
-
-    return Vertex(x, y, z);
+    return Kernel::Point_3(x, y, z);
 }
