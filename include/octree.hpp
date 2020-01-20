@@ -7,6 +7,9 @@
 #include "bounds.hpp"
 #include "vertex.hpp"
 #include "faces.hpp"
+
+#include <CGAL/intersections.h>
+
 class Octree {
 private:
     vector <array <Vertex *, 3>> triangles;
@@ -22,12 +25,15 @@ public:
     int get_level();
     array <Octree *, 8> get_children();
     bool objectColision(Octree& t2);
+    int numberOfChildren();
+    bool octreeCollides(Octree& o2);
 };
 
-Octree * oTreeInsert(vector <array <Vertex *, 3>> triangles_parent, Bounds bounds, size_t totalTris, Octree ** returnVal, int level);
-vector <array <Vertex *, 3>> findTrisInsideBounds(vector <array <Vertex *, 3>> triangles, Bounds bounds);
+int oTreeInsert(vector <array <Vertex *, 3>> triangles_parent, Bounds bounds, size_t totalTris, Octree ** returnVal, int level);
+vector <array <Vertex *, 3>> findTrisInsideBounds(vector <array <Vertex *, 3>>& triangles, Bounds& bounds);
 Vertex findCenter(Bounds bounds);
 Bounds findBounds(vector <Vertex> Vertices);
+int childrenRelation(Octree &o1, Octree &o2);
 Bounds calculateBounds(const char * octant, Bounds parentBounds, Vertex parentsCenter);
 bool compare_x(const Vertex& v1, const Vertex& v2);
 bool compare_y(const Vertex& v1, const Vertex& v2);

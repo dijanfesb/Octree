@@ -7,6 +7,8 @@
 
 using namespace std;
 
+typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
+
 Vertex::Vertex(double _x, double  _y, double _z)
 {
     this->x = _x;
@@ -54,4 +56,9 @@ bool Vertex::vertexInsideBounds(Bounds& bounds)
 QVector3D Vertex::toQVector3D()
 {
     return QVector3D(this->x, this->y, this->z);
+}
+
+Kernel::Point_3 Vertex::toPoint3()
+{
+    return Kernel::Point_3(x, y, z);
 }

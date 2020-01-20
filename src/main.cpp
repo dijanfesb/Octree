@@ -21,6 +21,31 @@ bool fileExists (const std::string& name) {
     return f.good();
 }
 
+template<class F, class... Args>
+auto functionTimeMs(F &&function, Args&&... args){
+    auto t1=chrono::high_resolution_clock::now();
+    *function(std::forward<Args>(args)...);
+    return (chrono::duration_cast <chrono::milliseconds>(chrono::high_resolution_clock::now()-t1).count());
+}
+
+template <class F, class T, class... Args>
+auto functionTimeMs(F &&function, T* t, Args&&... args){
+    auto t1=chrono::high_resolution_clock::now();
+    (t->*function)(std::forward<Args>(args)...);
+    return (chrono::duration_cast <chrono::milliseconds>(chrono::high_resolution_clock::now()-t1).count());
+}
+
+bool bruteForce(ObjFile& f1, ObjFile& f2)
+{
+    for (auto triangle1 : f1.triangleVector)
+        for (auto triangle2 : f2.triangleVector) {
+            auto result = intersection(toTriangle3(triangle1), toTriangle3(triangle2));
+                if (result)
+                    return true;
+        }
+    return false;
+}
+
 int main(int argc, char *argv[])
 {
     QApplication app (argc, argv);
@@ -57,64 +82,47 @@ int main(int argc, char *argv[])
     *(mainWindow.pLogBox) << "Učitavam prvi obj file :: ";
     auto t1 = chrono::high_resolution_clock::now();
     ObjFile file1 (filename1);
-    auto t2 = chrono::high_resolution_clock::now();
-    auto duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
+    auto duration = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t1).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
 
     *(mainWindow.pLogBox) << "Učitavam drugi obj file :: ";
     t1 = chrono::high_resolution_clock::now();
     ObjFile file2 (filename2);
-    t2 = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
+    duration = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t1).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
 
-    *(mainWindow.pLogBox) << "Crtam prvi objekt :: ";
-    t1 = chrono::high_resolution_clock::now();
-    p3DWidget->addTrisW(file1.triangleVector, p3DWidget->pPhongRed);
-    t2 = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
-    *(mainWindow.pLogBox) << duration << " ms" << "\n";
+    *(mainWindow.pLogBox) << "Crtam prvi objekt :: "    
+    << functionTimeMs(&Qt3DWindow::addTrisW, p3DWidget, file1.triangleVector, p3DWidget->pPhongRed);
+    *(mainWindow.pLogBox) << " ms" << "\n";
 
-    *(mainWindow.pLogBox) << "Crtam drugi objekt :: ";
-    t1 = chrono::high_resolution_clock::now();
-    p3DWidget->addTrisW(file2.triangleVector, p3DWidget->pPhongRed);
-    t2 = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
-    *(mainWindow.pLogBox) << duration << " ms" << "\n";
+    *(mainWindow.pLogBox) << "Crtam drugi objekt :: "    
+    << functionTimeMs(&Qt3DWindow::addTrisW, p3DWidget, file2.triangleVector, p3DWidget->pPhongRed);
+    *(mainWindow.pLogBox) << " ms" << "\n";
 
     *(mainWindow.pLogBox) << "Stvaram prvo stablo :: ";
     t1 = chrono::high_resolution_clock::now();
     Octree tree1(file1.triangleVector, file1.vertexVector);
-    t2 = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
+    duration = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t1).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
 
-    *(mainWindow.pLogBox) << "Stvaram drugo stablo :: ";
+    *(mainWindow.pLogBox) << "Stvaram prvo stablo :: ";
     t1 = chrono::high_resolution_clock::now();
     Octree tree2(file2.triangleVector, file2.vertexVector);
-    t2 = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
+    duration = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t1).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
     
-    *(mainWindow.pLogBox) << "Crtam prvi octree :: ";
+    *(mainWindow.pLogBox) << "Crtam prvi octree :: "    
+    << functionTimeMs(&Qt3DWindow::DrawOctree, p3DWidget, &tree1, 0, 3);
+    *(mainWindow.pLogBox) << " ms" << "\n";
+
+     *(mainWindow.pLogBox) << "Crtam drugi octree :: "    
+    << functionTimeMs(&Qt3DWindow::DrawOctree, p3DWidget, &tree2, 0, 3);
+    *(mainWindow.pLogBox) << " ms" << "\n";
+
     t1 = chrono::high_resolution_clock::now();
-    p3DWidget->DrawOctree(&tree1, 0, 3);
-    t2 = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
+    *(mainWindow.pLogBox) << (tree1.octreeCollides(tree2) ? "Sudar" : "Nema sudara") << " :: ";
+    duration = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t1).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
-
-    *(mainWindow.pLogBox) << "Crtam drugi octree :: ";
-    t1 = chrono::high_resolution_clock::now();
-    p3DWidget->DrawOctree(&tree2, 0, 3);
-    t2 = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>( t2 - t1 ).count();
-    *(mainWindow.pLogBox) << duration << " ms" << "\n";
-
-    auto endTime = chrono::high_resolution_clock::now();
-    auto startToEnd = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
-    *(mainWindow.pLogBox) << startToEnd << " ms" << "\n";
-
-    *(mainWindow.pLogBox) << (tree1.objectColision(tree2) ? "Sudar" : "Nema sudara") << "\n";
 
     p3DWidget->pObjFile1 = &file1;
     p3DWidget->pObjFile2 = &file2;

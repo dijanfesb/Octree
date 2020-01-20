@@ -2,7 +2,7 @@ QT += core gui
 QT += widgets
 QT += 3dcore 3drender 3dinput 3dextras
 
-CONFIG += debug
+LIBS += -lgmp -lmpfr -lCGAL
 
 SOURCES += \
     src/main.cpp \

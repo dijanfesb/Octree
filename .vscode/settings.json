@@ -11,6 +11,7 @@
         "qt3dwindow": "cpp",
         "chrono": "cpp",
         "future": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "ostream": "cpp"
     }
 }

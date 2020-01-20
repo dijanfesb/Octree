@@ -7,7 +7,13 @@
 #include "vertex.hpp"
 #include "bounds.hpp"
 
+#include <CGAL/Point_3.h>
+#include <CGAL/Triangle_3.h>
+#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+
 using namespace std;
+
+typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
 
 class Faces
 {
@@ -23,5 +29,6 @@ class Faces
 };
 
 bool triangleInsideBounds(array <Vertex *, 3> triangle, Bounds bounds);
+Kernel::Triangle_3 toTriangle3(array <Vertex *, 3> triangle);
 
 #endif
