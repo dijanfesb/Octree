@@ -69,7 +69,7 @@ Vertex Bounds::findCenter() {
 
 Bounds Bounds::calculate(const char * octant, Vertex parentsCenter)
 {
-    // string Octant : [T/B][F/B][R/L]
+    // string Octant : [T/B][F/R][R/L]
 
     Bounds bounds{};
 
@@ -86,7 +86,7 @@ Bounds Bounds::calculate(const char * octant, Vertex parentsCenter)
         bounds.frontZ = this->frontZ;
         bounds.backZ = parentsCenter.getCoordinates()[2];
     }
-    else if (octant[1] == 'B') {
+    else if (octant[1] == 'R') {
         bounds.frontZ = parentsCenter.getCoordinates()[2];
         bounds.backZ = this->backZ;
     }

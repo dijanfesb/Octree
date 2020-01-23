@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
 
     string filename1;
     string filename2;
+    bool bruteforce = false;
 
     if (argc < 3) {
         *(mainWindow.pLogBox) << "Nema dovoljno argumenata." << "\n";
@@ -52,6 +53,8 @@ int main(int argc, char *argv[])
     else {
         filename1 = argv[1];
         filename2 = argv[2];
+        if (argc == 4 && string(argv[3]) == string("--bruteforce"))
+            bruteforce = true;
     }
 
     if (!fileExists(filename1)) {
@@ -105,7 +108,10 @@ int main(int argc, char *argv[])
     *(mainWindow.pLogBox) << " ms" << "\n";
 
     t1 = chrono::high_resolution_clock::now();
-    *(mainWindow.pLogBox) << (tree1.collides(tree2) ? "Objekti se sudaraju" : "Objekti se ne sudaraju") << " :: ";
+    if (bruteforce)
+        *(mainWindow.pLogBox) << (bruteForce(file1, file2) ? "Objekti se sudaraju" : "Objekti se ne sudaraju") << " :: ";
+    else
+        *(mainWindow.pLogBox) << (tree1.collides(tree2) ? "Objekti se sudaraju" : "Objekti se ne sudaraju") << " :: ";
     duration = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t1).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
 

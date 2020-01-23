@@ -14,7 +14,7 @@
 
 using namespace std;
 
-const char *Octree::octants[8] = {"TFR", "TFL", "TBL", "TBR", "BFR", "BFL", "BBL", "BBR"};
+const char *Octree::octants[8] = {"TFR", "TFL", "TRL", "TRR", "BFR", "BFL", "BRL", "BRR"};
 
 vector <Vertex> findVerticesInsideBounds(vector <Vertex> vertices, Bounds bounds)
 {
