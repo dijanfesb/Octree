@@ -54,7 +54,7 @@ OBJECTS_DIR   = ./
 
 SOURCES       = src/main.cpp \
 		src/guiQt3D.cpp \
-		src/faces.cpp \
+		src/face.cpp \
 		src/vertex.cpp \
 		src/objfile.cpp \
 		src/octree.cpp \
@@ -62,7 +62,7 @@ SOURCES       = src/main.cpp \
 		src/octreeMainWindow.cpp 
 OBJECTS       = main.o \
 		guiQt3D.o \
-		faces.o \
+		face.o \
 		vertex.o \
 		objfile.o \
 		octree.o \
@@ -364,7 +364,6 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/features/qt_config.prf \
 		/usr/lib/qt/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/qt/mkspecs/features/spec_post.prf \
-		.qmake.stash \
 		/usr/lib/qt/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/qt/mkspecs/features/toolchain.prf \
 		/usr/lib/qt/mkspecs/features/default_pre.prf \
@@ -387,12 +386,12 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		Octree.pro include/guiQt3D.hpp \
 		include/vertex.hpp \
 		include/objfile.hpp \
-		include/faces.hpp \
+		include/face.hpp \
 		include/octree.hpp \
 		include/bounds.hpp \
 		include/octreeMainWindow.hpp src/main.cpp \
 		src/guiQt3D.cpp \
-		src/faces.cpp \
+		src/face.cpp \
 		src/vertex.cpp \
 		src/objfile.cpp \
 		src/octree.cpp \
@@ -705,7 +704,6 @@ Makefile: Octree.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspec
 		/usr/lib/qt/mkspecs/features/qt_config.prf \
 		/usr/lib/qt/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/qt/mkspecs/features/spec_post.prf \
-		.qmake.stash \
 		/usr/lib/qt/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/qt/mkspecs/features/toolchain.prf \
 		/usr/lib/qt/mkspecs/features/default_pre.prf \
@@ -1023,7 +1021,6 @@ Makefile: Octree.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspec
 /usr/lib/qt/mkspecs/features/qt_config.prf:
 /usr/lib/qt/mkspecs/linux-g++/qmake.conf:
 /usr/lib/qt/mkspecs/features/spec_post.prf:
-.qmake.stash:
 /usr/lib/qt/mkspecs/features/exclusive_builds.prf:
 /usr/lib/qt/mkspecs/features/toolchain.prf:
 /usr/lib/qt/mkspecs/features/default_pre.prf:
@@ -1059,8 +1056,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/qt/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents include/guiQt3D.hpp include/vertex.hpp include/objfile.hpp include/faces.hpp include/octree.hpp include/bounds.hpp include/octreeMainWindow.hpp $(DISTDIR)/
-	$(COPY_FILE) --parents src/main.cpp src/guiQt3D.cpp src/faces.cpp src/vertex.cpp src/objfile.cpp src/octree.cpp src/bounds.cpp src/octreeMainWindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents include/guiQt3D.hpp include/vertex.hpp include/objfile.hpp include/face.hpp include/octree.hpp include/bounds.hpp include/octreeMainWindow.hpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/main.cpp src/guiQt3D.cpp src/face.cpp src/vertex.cpp src/objfile.cpp src/octree.cpp src/bounds.cpp src/octreeMainWindow.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -1113,7 +1110,7 @@ compiler_clean: compiler_moc_predefs_clean
 main.o: src/main.cpp include/octree.hpp \
 		include/bounds.hpp \
 		include/vertex.hpp \
-		include/faces.hpp \
+		include/face.hpp \
 		include/octreeMainWindow.hpp \
 		include/guiQt3D.hpp \
 		include/objfile.hpp
@@ -1123,21 +1120,21 @@ guiQt3D.o: src/guiQt3D.cpp include/guiQt3D.hpp \
 		include/bounds.hpp \
 		include/vertex.hpp \
 		include/octree.hpp \
-		include/faces.hpp \
+		include/face.hpp \
 		include/objfile.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o guiQt3D.o src/guiQt3D.cpp
 
-faces.o: src/faces.cpp include/faces.hpp \
+face.o: src/face.cpp include/face.hpp \
 		include/vertex.hpp \
 		include/bounds.hpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o faces.o src/faces.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o face.o src/face.cpp
 
 vertex.o: src/vertex.cpp include/vertex.hpp \
 		include/bounds.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o vertex.o src/vertex.cpp
 
 objfile.o: src/objfile.cpp include/objfile.hpp \
-		include/faces.hpp \
+		include/face.hpp \
 		include/vertex.hpp \
 		include/bounds.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objfile.o src/objfile.cpp
@@ -1145,7 +1142,7 @@ objfile.o: src/objfile.cpp include/objfile.hpp \
 octree.o: src/octree.cpp include/octree.hpp \
 		include/bounds.hpp \
 		include/vertex.hpp \
-		include/faces.hpp
+		include/face.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o octree.o src/octree.cpp
 
 bounds.o: src/bounds.cpp include/bounds.hpp \
@@ -1157,7 +1154,7 @@ octreeMainWindow.o: src/octreeMainWindow.cpp include/octreeMainWindow.hpp \
 		include/bounds.hpp \
 		include/vertex.hpp \
 		include/octree.hpp \
-		include/faces.hpp \
+		include/face.hpp \
 		include/objfile.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o octreeMainWindow.o src/octreeMainWindow.cpp
 

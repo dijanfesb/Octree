@@ -3,19 +3,16 @@
 
 #include <vector>
 
-#include "faces.hpp"
+#include "face.hpp"
 
 class ObjFile
 {
-    private:
+    public:
         string name;
-        vector <Faces> facesVector;                      // Vector svih faceova
-    public:       
         ObjFile(string filename);
-        vector <Vertex> get_vertexVector();
-        vector <array <Vertex *, 3>> triangleVector;     // Vektor trokuta
-        vector <Vertex> vertexVector;                    // Vector svih vertexa
-        vector <array <Vertex *, 3>> buildTriangleVector();
+        vector <Face> facesVector;            // Vector svih faceova
+        vector <pTriangle> triangleVector;     // Vektor trokuta
+        vector <Vertex> vertexVector;         // Vector svih vertexa
         void move(double x, double y, double z);
 };
 

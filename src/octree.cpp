@@ -7,101 +7,47 @@
 #include <thread>
 #include <future>
 
+#define CHILDREN_NONE 0
+#define CHILDREN_NODE_1 1
+#define CHILDREN_NODE_2 2
+#define CHILDREN_BOTH 3
+
 using namespace std;
 
-const char *Octree::octants8] = {"TFR", "TFL", "TBL", "TBR", "BFR", "BFL", "BBL", "BBR"};
-
-Bounds findBounds(vector <Vertex> Vertices)
-{
-    Bounds bounds;
-
-    bounds.leftX = (*min_element(Vertices.begin()+1, Vertices.end(), compare_x)).get_coordinates()[0];
-    bounds.rightX = (*max_element(Vertices.begin()+1, Vertices.end(), compare_x)).get_coordinates()[0];
-    bounds.bottomY = (*min_element(Vertices.begin()+1, Vertices.end(), compare_y)).get_coordinates()[1];
-    bounds.topY = (*max_element(Vertices.begin()+1, Vertices.end(), compare_y)).get_coordinates()[1];
-    bounds.backZ = (*min_element(Vertices.begin()+1, Vertices.end(), compare_z)).get_coordinates()[2];
-    bounds.frontZ = (*max_element(Vertices.begin()+1, Vertices.end(), compare_z)).get_coordinates()[2];
-
-    return bounds;
-}
-
-Vertex findCenter(Bounds bounds) {
-    Vertex center;
-
-    double x = (bounds.leftX + bounds.rightX)/2;
-    double y = (bounds.topY + bounds.bottomY)/2;
-    double z = (bounds.frontZ + bounds.backZ)/2;
-
-    center.set_coordinates(x, y, z);
-    return center;
-}
+const char *Octree::octants[8] = {"TFR", "TFL", "TBL", "TBR", "BFR", "BFL", "BBL", "BBR"};
 
 vector <Vertex> findVerticesInsideBounds(vector <Vertex> vertices, Bounds bounds)
 {
     vector <Vertex> insideVertices;
 
     for (auto vertex : vertices) {
-        if (vertex.vertexInsideBounds(bounds))
+        if (vertex.insideBounds(bounds))
             insideVertices.push_back(vertex);
     }
 
     return insideVertices;
 }
 
-
-bool compare_x(const Vertex& v1, const Vertex& v2) {
-    return Vertex(v1).get_coordinates()[0] < Vertex(v2).get_coordinates()[0];
-}
-
-bool compare_y(const Vertex& v1, const Vertex& v2) {
-    return Vertex(v1).get_coordinates()[1] < Vertex(v2).get_coordinates()[1];
-}
-
-bool compare_z(const Vertex& v1, const Vertex& v2) {
-    return Vertex(v1).get_coordinates()[2] < Vertex(v2).get_coordinates()[2];
-}
-
-Bounds calculateBounds(const char * octant, Bounds parentBounds, Vertex parentsCenter)
+bool Vertex::compare_x(const Vertex& v1, const Vertex& v2)
 {
-    // string Octant : [T/B][F/B][R/L]
-
-    Bounds bounds{};
-
-    if (octant[0] == 'T') {
-        bounds.topY = parentBounds.topY;
-        bounds.bottomY = parentsCenter.get_coordinates()[1];
-    }
-    else if (octant[0] == 'B') {
-        bounds.topY = parentsCenter.get_coordinates()[1];
-        bounds.bottomY = parentBounds.bottomY;
-    }
-
-    if (octant[1] == 'F') {
-        bounds.frontZ = parentBounds.frontZ;
-        bounds.backZ = parentsCenter.get_coordinates()[2];
-    }
-    else if (octant[1] == 'B') {
-        bounds.frontZ = parentsCenter.get_coordinates()[2];
-        bounds.backZ = parentBounds.backZ;
-    }
-
-    if (octant[2] == 'R') {
-        bounds.rightX = parentBounds.rightX;
-        bounds.leftX = parentsCenter.get_coordinates()[0];
-    }
-    else if (octant[2] == 'L') {
-        bounds.rightX = parentsCenter.get_coordinates()[0];
-        bounds.leftX = parentBounds.leftX;
-    }
-
-    return bounds;
+    return Vertex(v1).getCoordinates()[0] < Vertex(v2).getCoordinates()[0];
 }
 
-Octree::Octree(vector <array <Vertex *, 3>> &triangles_parent, vector <Vertex>& vertexVector)
+bool Vertex::compare_y(const Vertex& v1, const Vertex& v2) 
 {
-    this->bounds = findBounds(vertexVector);
+    return Vertex(v1).getCoordinates()[1] < Vertex(v2).getCoordinates()[1];
+}
+
+bool Vertex::compare_z(const Vertex& v1, const Vertex& v2)
+{
+    return Vertex(v1).getCoordinates()[2] < Vertex(v2).getCoordinates()[2];
+}
+
+Octree::Octree(vector <pTriangle> &triangles_parent, vector <Vertex>& vertexVector)
+{
+    this->bounds = Bounds::find(vertexVector);
     this->level = 0;
-    this->center = findCenter(this->bounds);
+    this->center = this->bounds.findCenter();
     this->triangles = triangles_parent;
     size_t totalTris = triangles_parent.size();
 
@@ -109,11 +55,11 @@ Octree::Octree(vector <array <Vertex *, 3>> &triangles_parent, vector <Vertex>& 
     array <thread * , 8> threads = {nullptr};
 
     for (int i = 0; i<8; i++) {
-        Bounds childBounds = calculateBounds(this->octants[i], this->bounds, this->center);
-        vector <array <Vertex *, 3>> childTris = findTrisInsideBounds(this->triangles, childBounds);
+        Bounds childBounds = this->bounds.calculate(this->octants[i], this->center);
+        vector <pTriangle> childTris = childBounds.findTrianglesInside(this->triangles);
 
         if (childTris.size() < 0.8*triangles.size() && childTris.size() > (0.25/100)*totalTris) {
-            threads[i] = new thread(oTreeInsert, childTris, childBounds, totalTris, &children[i], this->level);
+            threads[i] = new thread(&Octree::insert, childTris, childBounds, totalTris, &children[i], this->level);
         }
         else
             children[i] = nullptr;
@@ -130,56 +76,45 @@ Octree::Octree(vector <array <Vertex *, 3>> &triangles_parent, vector <Vertex>& 
 
 }
 
-Octree::Octree(vector <array <Vertex *, 3>> &triangles_parent, Bounds bounds, size_t totalTris, int level)
+Octree::Octree(vector <pTriangle> &triangles_parent, Bounds bounds, size_t totalTris, int level)
 {
     this->bounds = bounds;
     this->level = level + 1;
-    this->center = findCenter(this->bounds);
+    this->center = this->bounds.findCenter();
     this->triangles = triangles_parent;
 
     for (int i = 0; i<8; i++) {
-        Bounds childBounds = calculateBounds(this->octants[i], this->bounds, this->center);
-        vector <array <Vertex *, 3>> childTris = findTrisInsideBounds(this->triangles, childBounds);
+        Bounds childBounds = this->bounds.calculate(this->octants[i], this->center);
+        vector <pTriangle> childTris = childBounds.findTrianglesInside(this->triangles);
 
         if (childTris.size() < 0.9*triangles.size() && childTris.size() > (0.025/100)*totalTris) {
-            Children[i] = new Octree(childTris, calculateBounds(this->octants[i], this->bounds, this->center), totalTris, this->level);
+            Children[i] = new Octree(childTris, this->bounds.calculate(this->octants[i], this->center), totalTris, this->level);
         }
         else
             Children[i] = nullptr;
     } 
 }
 
-Bounds Octree::get_bounds()
+Bounds Octree::getBounds()
 {
     return this->bounds;
 }
 
-int Octree::get_level()
+int Octree::getLevel()
 {
     return this->level;
 }
 
-array <Octree *, 8> Octree::get_children()
+array <Octree *, 8> Octree::getChildren()
 {
     return this->Children;
 }
 
-int oTreeInsert(vector <array <Vertex *, 3>> triangles_parent, Bounds bounds, size_t totalTris, Octree ** returnVal, int level)
+int Octree::insert(vector <pTriangle> triangles_parent, Bounds bounds, size_t totalTris, Octree ** pInsert, int level)
 {
     Octree * pChild = new Octree(triangles_parent, bounds, totalTris, level);
-    *returnVal = pChild;
+    *pInsert = pChild;
     return (pChild ? 0 : 1);
-}
-
-vector <array <Vertex *, 3>> findTrisInsideBounds(vector <array <Vertex *, 3>>& triangles, Bounds& bounds)
-{
-    vector <array <Vertex *, 3>> retVector;
-
-    for (auto triangle : triangles)
-        if (triangleInsideBounds(triangle, bounds))
-            retVector.push_back(triangle);
-
-    return retVector;
 }
 
 int Octree::numberOfChildren()
@@ -193,48 +128,47 @@ int Octree::numberOfChildren()
     return c;
 }
 
-bool Octree::octreeCollides(Octree& o2)
+bool Octree::collides(Octree& o2)
 {
-    vector <Octree> pairVector;
-    pairVector.push_back(*this);
-    pairVector.push_back(o2);
-    int i = 0;
+    vector <Octree *> pairVector;
+    pairVector.push_back(this);
+    pairVector.push_back(&o2);
 
     while (pairVector.size()) {
-        Octree t1 = pairVector.back();
+        Octree* t1 = pairVector.back();
         pairVector.pop_back();
-        Octree t2 = pairVector.back();
+        Octree* t2 = pairVector.back();
         pairVector.pop_back();
 
-        if (t1.bounds.BoundsCollision(t2.bounds)) {
-            switch (childrenRelation(t1, t2)) {
-            case 0:
-                for (auto triangle1 : t1.triangles)
-                    for (auto triangle2 : t2.triangles) {
-                        if (intersection(toTriangle3(triangle1), toTriangle3(triangle2)))
+        if (t1->bounds.intersect(t2->bounds)) {
+            switch (t1->childrenRelation(*t2)) {
+            case CHILDREN_NONE:
+                for (auto triangle1 : t1->triangles)
+                    for (auto triangle2 : t2->triangles) {
+                        if (CGAL::intersection(Face::toTriangle3(triangle1), Face::toTriangle3(triangle2)))
                             return true;
                     }
                 break;
-            case 1:
-                for (auto child1 : t1.Children)
+            case CHILDREN_NODE_1:
+                for (auto child1 : t1->Children)
                         if (child1) {
-                            pairVector.push_back(*child1);
+                            pairVector.push_back(child1);
                             pairVector.push_back(t2);
                         }
                 break;
-            case 2:
-                for (auto child2 : t2.Children)
+            case CHILDREN_NODE_2:
+                for (auto child2 : t2->Children)
                         if (child2) {
                             pairVector.push_back(t1);
-                            pairVector.push_back(*child2);
+                            pairVector.push_back(child2);
                         }
                 break;
-            case 3:
-                for (auto child1 : t1.Children)
-                    for (auto child2 : t2.Children)
+            case CHILDREN_BOTH:
+                for (auto child1 : t1->Children)
+                    for (auto child2 : t2->Children)
                         if (child1 && child2) {
-                            pairVector.push_back(*child1);
-                            pairVector.push_back(*child2);
+                            pairVector.push_back(child1);
+                            pairVector.push_back(child2);
                         }
                 break;
             }
@@ -247,16 +181,16 @@ bool Octree::octreeCollides(Octree& o2)
     return false;
 }
 
-int childrenRelation(Octree &o1, Octree &o2)                  // return: 0 -> ni o1 ni o2 nemaju dicu
-{                                                             //         1 -> samo o1 ima
-    if (!(o1.numberOfChildren() || o2.numberOfChildren()))    //         2 -> samo o2 ima
-        return 0;                                             //         3 -> oba imaju
-    if (o1.numberOfChildren() && o2.numberOfChildren())       //        -1 -> greska
-        return 3;
-    if (o1.numberOfChildren())
-        return 1;
+int Octree::childrenRelation(Octree &o2)                  
+{                                                             
+    if (!(this->numberOfChildren() || o2.numberOfChildren()))  
+        return CHILDREN_NONE;                              
+    if (this->numberOfChildren() && o2.numberOfChildren())      
+        return CHILDREN_BOTH;
+    if (this->numberOfChildren())
+        return CHILDREN_NODE_1;
     if (o2.numberOfChildren())
-        return 2;
+        return CHILDREN_NODE_2;
 
     return -1;
 }

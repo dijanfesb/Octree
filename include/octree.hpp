@@ -6,37 +6,28 @@
 
 #include "bounds.hpp"
 #include "vertex.hpp"
-#include "faces.hpp"
+#include "face.hpp"
 
 #include <CGAL/intersections.h>
 
 class Octree {
 private:
-    vector <array <Vertex *, 3>> triangles;
+    vector <pTriangle> triangles;
     int level;
     Vertex center;
     Bounds bounds;
     array <Octree *, 8> Children;
 public:
     static const char *octants[8];
-    Octree(vector <array <Vertex *, 3>> &triangles_parent, vector <Vertex>& vertexVector);
-    Octree(vector <array <Vertex *, 3>> &triangles_parent, Bounds bounds, size_t totalTris, int level = -1);
-    Bounds get_bounds();
-    int get_level();
-    array <Octree *, 8> get_children();
-    bool objectColision(Octree& t2);
+    Octree(vector <pTriangle> &triangles_parent, vector <Vertex>& vertexVector);
+    Octree(vector <pTriangle> &triangles_parent, Bounds bounds, size_t totalTris, int level = -1);
+    Bounds getBounds();
+    int getLevel();
+    array <Octree *, 8> getChildren();
     int numberOfChildren();
-    bool octreeCollides(Octree& o2);
+    bool collides(Octree& o2);
+    int childrenRelation(Octree &o2);
+    static int insert(vector <pTriangle> triangles_parent, Bounds bounds, size_t totalTris, Octree ** pInsert, int level); // Wrapper za std::thread
 };
-
-int oTreeInsert(vector <array <Vertex *, 3>> triangles_parent, Bounds bounds, size_t totalTris, Octree ** returnVal, int level);
-vector <array <Vertex *, 3>> findTrisInsideBounds(vector <array <Vertex *, 3>>& triangles, Bounds& bounds);
-Vertex findCenter(Bounds bounds);
-Bounds findBounds(vector <Vertex> Vertices);
-int childrenRelation(Octree &o1, Octree &o2);
-Bounds calculateBounds(const char * octant, Bounds parentBounds, Vertex parentsCenter);
-bool compare_x(const Vertex& v1, const Vertex& v2);
-bool compare_y(const Vertex& v1, const Vertex& v2);
-bool compare_z(const Vertex& v1, const Vertex& v2);
 
 #endif

@@ -16,6 +16,8 @@ class MyLogWindow : public QPlainTextEdit
 {
 public:
     void appendMessage(const QString& text);
+    MyLogWindow& operator << (string text);
+    MyLogWindow& operator << (int number);
 };
 
 class OctreeMainWindow : public QMainWindow {
@@ -29,8 +31,5 @@ class OctreeMainWindow : public QMainWindow {
 
         void keyPressEvent(QKeyEvent *event) override;
 };
-
-MyLogWindow& operator << (MyLogWindow& lw, string text);
-MyLogWindow& operator << (MyLogWindow& lw, int number);
 
 #endif

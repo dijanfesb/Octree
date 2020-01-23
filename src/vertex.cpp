@@ -16,7 +16,7 @@ Vertex::Vertex(double _x, double  _y, double _z)
     this->z = _z;
 }
 
-int Vertex::set_coordinates(double _x, double _y, double _z)
+int Vertex::setCoordinates(double _x, double _y, double _z)
 {
     this->x = _x;
     this->y = _y;
@@ -40,13 +40,13 @@ Vertex::Vertex(string vLine)
     line >> x >> y >> z;
 }
 
-array <double, 3> Vertex::get_coordinates()
+array <double, 3> Vertex::getCoordinates()
 {
     array <double, 3> temp = {x, y, z};
     return temp;
 }
 
-bool Vertex::vertexInsideBounds(Bounds& bounds)
+bool Vertex::insideBounds(Bounds& bounds)
 {
     return (this->x >= bounds.leftX)  &&  (this->x <= bounds.rightX) &&
            (this->y >= bounds.bottomY) && (this->y <= bounds.topY) &&

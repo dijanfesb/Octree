@@ -21,18 +21,16 @@ class Vertex
         double z;
     public:
         Vertex(string vLine);
-        array <double, 3> get_coordinates();
+        array <double, 3> getCoordinates();
         Vertex(double _x = 0, double  _y = 0, double _z = 0);
-        int set_coordinates(double _x, double _y, double _z);
-        bool vertexInsideBounds(Bounds& bounds);
+        int setCoordinates(double _x, double _y, double _z);
+        bool insideBounds(Bounds& bounds);
         QVector3D toQVector3D();
         Kernel::Point_3 toPoint3();
 
-
-        Vertex operator - (Vertex v2); 
-        Vertex operator + (Vertex v2);
-        double operator * (Vertex v2); // Skalarni produkt
-        Vertex operator & (Vertex v2); // Vektorski produkt
+        static bool compare_x(const Vertex& v1, const Vertex& v2);
+        static bool compare_y(const Vertex& v1, const Vertex& v2);
+        static bool compare_z(const Vertex& v1, const Vertex& v2);
 };
 
 #endif

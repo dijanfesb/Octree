@@ -5,6 +5,8 @@
 
 #include "vertex.hpp"
 
+typedef array <Vertex *, 3> pTriangle;
+
 using namespace std;
 class Bounds {
 public:
@@ -17,8 +19,13 @@ public:
 
     Bounds();
     array <Vertex, 8> getCorners();
-    bool BoundsCollision(Bounds& b2);
-    
+    bool intersect(Bounds& b2);
+    vector <pTriangle> findTrianglesInside(vector <pTriangle>& triangles);
+    bool triangleInside(pTriangle& triangle);
+    Vertex findCenter();
+    Bounds calculate(const char * octant, Vertex parentsCenter);
+    static Bounds find(vector <Vertex> Vertices);
+
 };
 
 #endif

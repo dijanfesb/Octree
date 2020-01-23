@@ -31,16 +31,16 @@ void MyLogWindow::appendMessage(const QString& text)
     this->verticalScrollBar()->setValue(this->verticalScrollBar()->maximum()); // Scrolls to the bottom
 }
 
-MyLogWindow& operator << (MyLogWindow& lw, string text)
+MyLogWindow& MyLogWindow::operator << (string text)
 {
-    lw.appendMessage(QString::fromStdString(text));
-    return lw;
+    this->appendMessage(QString::fromStdString(text));
+    return *this;
 }
  
-MyLogWindow& operator << (MyLogWindow& lw, int number)
+MyLogWindow& MyLogWindow::operator << (int number)
 {
-    lw.appendMessage(QString::fromStdString(to_string(number)));
-    return lw;
+    this->appendMessage(QString::fromStdString(to_string(number)));
+    return *this;
 }
 
 void OctreeMainWindow::keyPressEvent(QKeyEvent *event)
@@ -48,73 +48,73 @@ void OctreeMainWindow::keyPressEvent(QKeyEvent *event)
     switch (event->key())
     {
         case Qt::Key_0:
-            pView->CreateRootEntity();
+            pView->createRootEntity();
             pView->showTree = true;
             pView->addTrisW(pView->pObjFile1->triangleVector, pView->pPhongRed);
             pView->addTrisW(pView->pObjFile2->triangleVector, pView->pPhongRed);
-            pView->DrawOctree(pView->pTree1, 0, 0);
-            pView->DrawOctree(pView->pTree2, 0, 0);
+            pView->drawOctree(pView->pTree1, 0, 0);
+            pView->drawOctree(pView->pTree2, 0, 0);
         break;
         case Qt::Key_1:
-            pView->CreateRootEntity();
+            pView->createRootEntity();
             pView->showTree = true;
             pView->addTrisW(pView->pObjFile1->triangleVector, pView->pPhongRed);
             pView->addTrisW(pView->pObjFile2->triangleVector, pView->pPhongRed);
-            pView->DrawOctree(pView->pTree1, 1, 1);
-            pView->DrawOctree(pView->pTree2, 1, 1);
+            pView->drawOctree(pView->pTree1, 1, 1);
+            pView->drawOctree(pView->pTree2, 1, 1);
         break;
         case Qt::Key_2:
-            pView->CreateRootEntity();
+            pView->createRootEntity();
             pView->showTree = true;
             pView->addTrisW(pView->pObjFile1->triangleVector, pView->pPhongRed);
             pView->addTrisW(pView->pObjFile2->triangleVector, pView->pPhongRed);
-            pView->DrawOctree(pView->pTree1, 2, 2);
-            pView->DrawOctree(pView->pTree2, 2, 2);
+            pView->drawOctree(pView->pTree1, 2, 2);
+            pView->drawOctree(pView->pTree2, 2, 2);
         break;
         case Qt::Key_3:
-            pView->CreateRootEntity();
+            pView->createRootEntity();
             pView->showTree = true;
             pView->addTrisW(pView->pObjFile1->triangleVector, pView->pPhongRed);
             pView->addTrisW(pView->pObjFile2->triangleVector, pView->pPhongRed);
-            pView->DrawOctree(pView->pTree1, 3, 3);
-            pView->DrawOctree(pView->pTree2, 3, 3);
+            pView->drawOctree(pView->pTree1, 3, 3);
+            pView->drawOctree(pView->pTree2, 3, 3);
         break;
         case Qt::Key_4:
-            pView->CreateRootEntity();
+            pView->createRootEntity();
             pView->showTree = true;
             pView->addTrisW(pView->pObjFile1->triangleVector, pView->pPhongRed);
             pView->addTrisW(pView->pObjFile2->triangleVector, pView->pPhongRed);
-            pView->DrawOctree(pView->pTree1, 4, 4);
-            pView->DrawOctree(pView->pTree2, 4, 4);
+            pView->drawOctree(pView->pTree1, 4, 4);
+            pView->drawOctree(pView->pTree2, 4, 4);
         break;
         case Qt::Key_5:
-            pView->CreateRootEntity();
+            pView->createRootEntity();
             pView->showTree = true;
             pView->addTrisW(pView->pObjFile1->triangleVector, pView->pPhongRed);
             pView->addTrisW(pView->pObjFile2->triangleVector, pView->pPhongRed);
-            pView->DrawOctree(pView->pTree1, 5, 5);
-            pView->DrawOctree(pView->pTree2, 5, 5);
+            pView->drawOctree(pView->pTree1, 5, 5);
+            pView->drawOctree(pView->pTree2, 5, 5);
         break;
         case Qt::Key_T:
-            pView->CreateRootEntity();
+            pView->createRootEntity();
             pView->showTris = !pView->showTris;
             pView->addTrisW(pView->pObjFile1->triangleVector, pView->pPhongRed);
             pView->addTrisW(pView->pObjFile2->triangleVector, pView->pPhongRed);
-            pView->DrawOctree(pView->pTree1);
-            pView->DrawOctree(pView->pTree2);
+            pView->drawOctree(pView->pTree1);
+            pView->drawOctree(pView->pTree2);
         break;
         case Qt::Key_O:
-            pView->CreateRootEntity();
+            pView->createRootEntity();
             pView->showTree = !pView->showTree;
             pView->addTrisW(pView->pObjFile1->triangleVector, pView->pPhongRed);
             pView->addTrisW(pView->pObjFile2->triangleVector, pView->pPhongRed);
-            pView->DrawOctree(pView->pTree1);
-            pView->DrawOctree(pView->pTree2);
+            pView->drawOctree(pView->pTree1);
+            pView->drawOctree(pView->pTree2);
         break;
         case Qt::Key_W:
-            pView->CreateRootEntity();
-            pView->DrawWireframe(pView->pObjFile1->triangleVector);
-            pView->DrawWireframe(pView->pObjFile2->triangleVector);
+            pView->createRootEntity();
+            pView->drawWireframe(pView->pObjFile1->triangleVector);
+            pView->drawWireframe(pView->pObjFile2->triangleVector);
         break;
 
     }

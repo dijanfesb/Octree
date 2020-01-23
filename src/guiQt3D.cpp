@@ -16,7 +16,7 @@ Qt3DWindow::Qt3DWindow(){
     showTris = true;
     showTree = true;
 // napravi korijen
-    this->CreateRootEntity();
+    this->createRootEntity();
 // prikazi 3D prozor
     this->show();
 // napravi widget od ovog prozora
@@ -24,7 +24,7 @@ Qt3DWindow::Qt3DWindow(){
     this->setFlags(Qt::FramelessWindowHint);
 }
 
-void Qt3DWindow::CreateRootEntity(){
+void Qt3DWindow::createRootEntity(){
 // Root entity
     pRootEntity = new Qt3DCore::QEntity();
 // napravi kontrolu kamere
@@ -73,7 +73,7 @@ void Qt3DWindow::CreateRootEntity(){
     this->setRootEntity(pRootEntity);
 }
 
-void Qt3DWindow::AddTris(vector <array <Vertex *, 3>> &triangleVector_Ext, Qt3DExtras::QPhongMaterial * material) {
+void Qt3DWindow::addTris(vector <pTriangle> &triangleVector_Ext, Qt3DExtras::QPhongMaterial * material) {
     vector <array <QVector3D, 3>> triangleVector;
 
     for(auto triangle : triangleVector_Ext) {
@@ -173,7 +173,7 @@ void Qt3DWindow::AddTris(vector <array <Vertex *, 3>> &triangleVector_Ext, Qt3DE
     pTrisEntity->addComponent(material);
 }
 
-void Qt3DWindow::AddLines(vector <QVector3D> lines, Qt3DExtras::QPhongMaterial * material) {
+void Qt3DWindow::addLines(vector <QVector3D> lines, Qt3DExtras::QPhongMaterial * material) {
 // stvaram entitet, renderer i geometriju
     Qt3DCore::QEntity *linesEntity = new Qt3DCore::QEntity(pRootEntity);
     Qt3DRender::QGeometryRenderer *linesRenderer = new Qt3DRender::QGeometryRenderer(pRootEntity);
@@ -233,7 +233,7 @@ void Qt3DWindow::AddLines(vector <QVector3D> lines, Qt3DExtras::QPhongMaterial *
     linesEntity->addComponent(material);
 }
 
-void Qt3DWindow::AddText(const QString& str, const QVector3D& pos, Qt3DExtras::QPhongMaterial* pMat, float scale) {
+void Qt3DWindow::addText(const QString& str, const QVector3D& pos, Qt3DExtras::QPhongMaterial* pMat, float scale) {
 // stvaram entitet
     Qt3DCore::QEntity *text = new Qt3DCore::QEntity(pRootEntity);
 // stvaram tekst objekt
@@ -250,7 +250,7 @@ void Qt3DWindow::AddText(const QString& str, const QVector3D& pos, Qt3DExtras::Q
     text->addComponent(textTransform);
 }
 
-void Qt3DWindow::addTrisW(vector <array <Vertex *, 3>> &triangleVector_Ext, Qt3DExtras::QPhongMaterial * material)
+void Qt3DWindow::addTrisW(vector <pTriangle> &triangleVector_Ext, Qt3DExtras::QPhongMaterial * material)
 {
     ulong step = 100;
 
@@ -262,7 +262,7 @@ void Qt3DWindow::addTrisW(vector <array <Vertex *, 3>> &triangleVector_Ext, Qt3D
         ulong index = 0;
 
         do {
-            vector <array <Vertex *, 3>> tempVec;
+            vector <pTriangle> tempVec;
             if (triangleVector_Ext.size() - offset > step) {
                 for (ulong i = index; i < offset; i++) {
                     tempVec.push_back(triangleVector_Ext[i]);
@@ -279,14 +279,14 @@ void Qt3DWindow::addTrisW(vector <array <Vertex *, 3>> &triangleVector_Ext, Qt3D
                 offset += triangleVector_Ext.size() - offset;
 
             }
-            this->AddTris(tempVec, material);
+            this->addTris(tempVec, material);
         } while (offset < triangleVector_Ext.size());
     }
     else
-        this->AddTris(triangleVector_Ext, material);
+        this->addTris(triangleVector_Ext, material);
 }
 
-void Qt3DWindow::DrawLines(Bounds bounds, Qt3DExtras::QPhongMaterial * material) {
+void Qt3DWindow::drawLines(Bounds bounds, Qt3DExtras::QPhongMaterial * material) {
     vector <QVector3D> lines;
     array <Vertex, 8> points = bounds.getCorners();
 
@@ -326,40 +326,40 @@ void Qt3DWindow::DrawLines(Bounds bounds, Qt3DExtras::QPhongMaterial * material)
     lines.push_back(points[3].toQVector3D());
     lines.push_back(points[7].toQVector3D());
 
-    this->AddLines(lines, material);
+    this->addLines(lines, material);
 }
 
-void Qt3DWindow::DrawOctree(Octree * root, int minLevel, int maxLevel)
+void Qt3DWindow::drawOctree(Octree * root, int minLevel, int maxLevel)
 {
     maxLevel = (maxLevel == -1) ? INT_MAX : maxLevel;
 
     if (!this->showTree)
         return;
 
-    if (root->get_level() >= minLevel && root->get_level() <= maxLevel) {
-        switch (root->get_level()) {
+    if (root->getLevel() >= minLevel && root->getLevel() <= maxLevel) {
+        switch (root->getLevel()) {
             case 0:
             case 1:
-                this->DrawLines(root->get_bounds(), this->pSpecularWhite);
+                this->drawLines(root->getBounds(), this->pSpecularWhite);
                 break;
             case 2:
-                this->DrawLines(root->get_bounds(), this->pSpecularYellow);
+                this->drawLines(root->getBounds(), this->pSpecularYellow);
                 break;
             case 3:
-                this->DrawLines(root->get_bounds(), this->pSpecularYellow);
+                this->drawLines(root->getBounds(), this->pSpecularYellow);
                 break;
             default:
-                this->DrawLines(root->get_bounds(), this->pSpecularGreen);
+                this->drawLines(root->getBounds(), this->pSpecularGreen);
         }
     }
     
-    for (auto subtree : root->get_children()) {
+    for (auto subtree : root->getChildren()) {
         if (subtree)
-            this->DrawOctree(subtree, minLevel, maxLevel);
+            this->drawOctree(subtree, minLevel, maxLevel);
     }
 }
 
-void Qt3DWindow::DrawWireframe(vector <array <Vertex *, 3>> &triangleVector_Ext)
+void Qt3DWindow::drawWireframe(vector <pTriangle> &triangleVector_Ext)
 {
     for (auto triangle : triangleVector_Ext) {
         vector <QVector3D> lines;
@@ -373,6 +373,6 @@ void Qt3DWindow::DrawWireframe(vector <array <Vertex *, 3>> &triangleVector_Ext)
         lines.push_back(triangle[2]->toQVector3D());
         lines.push_back(triangle[0]->toQVector3D());
 
-        this->AddLines(lines, this->pSpecularBlue);
+        this->addLines(lines, this->pSpecularBlue);
     }
 }

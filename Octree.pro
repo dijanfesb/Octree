@@ -7,7 +7,7 @@ LIBS += -lgmp -lmpfr -lCGAL
 SOURCES += \
     src/main.cpp \
     src/guiQt3D.cpp \
-    src/faces.cpp \
+    src/face.cpp \
     src/vertex.cpp \
     src/objfile.cpp \
     src/octree.cpp \
@@ -18,7 +18,7 @@ HEADERS += \
     include/guiQt3D.hpp \
     include/vertex.hpp \
     include/objfile.hpp \
-    include/faces.hpp \
+    include/face.hpp \
     include/octree.hpp \
     include/bounds.hpp \
     include/octreeMainWindow.hpp

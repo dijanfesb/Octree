@@ -26,14 +26,14 @@ class Qt3DWindow : public Qt3DExtras::Qt3DWindow {
 public:
     Qt3DWindow();
 
-    void AddTris(vector <array <Vertex *, 3>> &triangleVector_Ext, Qt3DExtras::QPhongMaterial * material); // Do 30000 trokuta
-    void addTrisW(vector <array <Vertex *, 3>> &triangleVector_Ext, Qt3DExtras::QPhongMaterial * material);
-    void AddLines(vector <QVector3D> lines, Qt3DExtras::QPhongMaterial* material);
-    void DrawOctree(Octree * root, int minLevel = -1, int maxLevel = -1); // min i max = -1 -> nema granica
-    void DrawLines(Bounds bounds, Qt3DExtras::QPhongMaterial * material);
-    void DrawWireframe(vector <array <Vertex *, 3>> &triangleVector_Ext);
-    void AddText(const QString& str, const QVector3D& pos, Qt3DExtras::QPhongMaterial* pMat, float scale);
-    void CreateRootEntity();
+    void addTris(vector <pTriangle> &triangleVector_Ext, Qt3DExtras::QPhongMaterial * material); // Do 30000 trokuta
+    void addTrisW(vector <pTriangle> &triangleVector_Ext, Qt3DExtras::QPhongMaterial * material);
+    void addLines(vector <QVector3D> lines, Qt3DExtras::QPhongMaterial* material);
+    void addText(const QString& str, const QVector3D& pos, Qt3DExtras::QPhongMaterial* pMat, float scale);
+    void drawOctree(Octree * root, int minLevel = -1, int maxLevel = -1); // min i max = -1 -> nema granica
+    void drawLines(Bounds bounds, Qt3DExtras::QPhongMaterial * material);
+    void drawWireframe(vector <pTriangle> &triangleVector_Ext);
+    void createRootEntity();
 
     QWidget* pMyWidget;
     Qt3DCore::QEntity* pRootEntity;
