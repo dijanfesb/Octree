@@ -94,7 +94,7 @@ void Qt3DWindow::addTris(vector <pTriangle> &triangleVector_Ext, Qt3DExtras::QPh
 // stvaram podatke za vertex buffer
 	QVector3D tn;
 	QVector<QVector3D> trisVertices;
-	for(auto it : triangleVector){
+	for(auto it : triangleVector) {
 	    tn = QVector3D::normal(it[0], it[1], it[2]);
 	    trisVertices << it[0] << tn;
 	    trisVertices << it[1] << tn;

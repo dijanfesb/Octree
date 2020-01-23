@@ -72,12 +72,16 @@ int main(int argc, char *argv[])
     ObjFile file1 (filename1);
     auto duration = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t1).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
+    *(mainWindow.pLogBox) << "Tris: " << file1.triangleVector.size() << "\n";
+    *(mainWindow.pLogBox) << "Vertices: " << file1.vertexVector.size() << "\n";
 
     *(mainWindow.pLogBox) << "Učitavanje druge .obj datoteke :: ";
     t1 = chrono::high_resolution_clock::now();
     ObjFile file2 (filename2);
     duration = chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - t1).count();
     *(mainWindow.pLogBox) << duration << " ms" << "\n";
+    *(mainWindow.pLogBox) << "Tris: " << file2.triangleVector.size() << "\n";
+    *(mainWindow.pLogBox) << "Vertices: " << file2.vertexVector.size() << "\n";
 
     *(mainWindow.pLogBox) << "Stvaranje prve octree strukture :: ";
     t1 = chrono::high_resolution_clock::now();
