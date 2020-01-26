@@ -37,6 +37,7 @@ void Qt3DWindow::createRootEntity(){
     Qt3DRender::QDirectionalLight* pCamLight = new Qt3DRender::QDirectionalLight();
     pCamLight->setWorldDirection(QVector3D(0.0f, -0.0f, -1.0f));
     pCamLight->setColor(QColor::fromRgbF(1.0, 1.0, 1.0, 1.0));
+    pCamLight->setIntensity(1.25);
     pCamLightEntity->addComponent(pCamLight);
 // Materiali
     pSpecularWhite = new Qt3DExtras::QPhongMaterial(pRootEntity);
